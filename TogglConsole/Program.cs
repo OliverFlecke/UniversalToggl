@@ -17,7 +17,8 @@ namespace TogglConsole
         public static async Task Test()
         {
             Authentication au = new Authentication();
-            string result = await au.Logon();
+            //string result = await au.Logon();
+            string result = await au.GetWorkspaces();
             Console.WriteLine(result);
 
             Console.WriteLine("Program done");
