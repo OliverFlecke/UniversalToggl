@@ -11,27 +11,18 @@ namespace TogglConsole
     {
         static void Main(string[] args)
         {
-            Test().Wait();
+            Test();
         }
 
-        public static async Task Test()
+        public static void Test()
         {
             Authentication au = new Authentication();
             //string result = await au.Logon();
-            string result = await au.GetWorkspaces();
-            Console.WriteLine(result);
+            //string result = await au.GetMe();
+            //Console.WriteLine(result);
 
             Console.WriteLine("Program done");
             Console.ReadLine();
-        }
-
-        public static async Task CallRecipeServiceAsync()
-        {
-            var recipes = await new Authentication().GetRecipeDataItemsAsync();
-            foreach (var receipe in recipes)
-            {
-                Console.WriteLine(receipe.Title);
-            }
         }
     }
 }
