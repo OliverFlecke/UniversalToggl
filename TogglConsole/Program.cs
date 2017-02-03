@@ -16,7 +16,6 @@ namespace TogglConsole
 
         public static void Test()
         {
-            Authentication au = new Authentication();
             //string result = await au.Logon();
             //string result = await au.GetMe();
             //Console.WriteLine(result);

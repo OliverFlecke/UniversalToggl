@@ -13,16 +13,22 @@ namespace TogglAPI
     {
         #region properties
 
-        [JsonProperty]
         /// <summary>
         /// The ID of the user
         /// </summary>
+        [JsonProperty]
         public int Id { get; set; }
 
+        /// <summary>
+        /// The full name of the user
+        /// </summary>
         [JsonProperty]
+        public string Fullname { get; set; }
+
         /// <summary>
         /// The users Email address
         /// </summary>
+        [JsonProperty]
         public string Email { get; set; }
 
         /// <summary>
@@ -30,10 +36,10 @@ namespace TogglAPI
         /// </summary>
         public string Password { get; private set; }
 
-        [JsonProperty(PropertyName = "api_token")]
         /// <summary>
         /// The users API token 
         /// </summary>
+        [JsonProperty(PropertyName = "api_token")]
         public string Token { get; set; }
         #endregion
 
@@ -82,17 +88,7 @@ namespace TogglAPI
         /// <returns>The user that has connected to the Web API</returns>
         private static async Task<User> Logon()
         {
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, Connection.Url + "me");
-            HttpResponseMessage response = await Connection.Client.SendAsync(request);
-
-            if (response.IsSuccessStatusCode)
-                return CreateUserFromJSON(Connection.ExtractContent(response));
-            else
-            {
-                if (response.StatusCode == HttpStatusCode.Forbidden)
-                    throw new AuthenticationException("Email or password are not correct", (int) response.StatusCode);
-                throw new Exception();
-            }
+            return CreateUserFromJSON(await Connection.SendAsync("me", HttpMethod.Get));
         }
 
         /// <summary>

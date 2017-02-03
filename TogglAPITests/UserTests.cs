@@ -37,6 +37,7 @@ namespace TogglAPITests
             Assert.AreEqual(email, user.Email);
             Assert.AreEqual(apiToken, user.Token);
             Assert.AreEqual(id, user.Id);
+            Assert.AreEqual("Toggltestmail", user.Fullname);
         }
 
         [TestMethod]
@@ -49,6 +50,7 @@ namespace TogglAPITests
             Assert.AreEqual(email, user.Email);
             Assert.AreEqual(apiToken, user.Token);
             Assert.AreEqual(id, user.Id);
+            Assert.AreEqual("Toggltestmail", user.Fullname);
         }
 
         [TestMethod]

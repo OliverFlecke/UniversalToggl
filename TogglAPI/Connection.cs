@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -94,6 +95,25 @@ namespace TogglAPI
 
             task.Wait();
             return responseValue;
+        }
+
+        /// <summary>
+        /// Send a request to the Web API 
+        /// </summary>
+        /// <returns></returns>
+        internal static async Task<string> SendAsync(string relativeUrl, HttpMethod method)
+        {
+            HttpRequestMessage request = new HttpRequestMessage(method, Url + relativeUrl);
+            HttpResponseMessage response = await Client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+                return ExtractContent(response);
+            else
+            {
+                if (response.StatusCode == HttpStatusCode.Forbidden)
+                    throw new AuthenticationException("Email or password are not correct", (int)response.StatusCode);
+                throw new Exception();
+            }
         }
     }
 }
