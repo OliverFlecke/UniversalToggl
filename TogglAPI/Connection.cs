@@ -47,6 +47,7 @@ namespace TogglAPI
         }
 
 
+
         /// <summary>
         /// Setup the connection to the Web API with the correct credientials
         /// </summary>
@@ -65,6 +66,7 @@ namespace TogglAPI
         {
             SetupConnection(User.ConvertToBase64(email + ":" + password));
         }
+
 
         /// <summary>
         /// Reset the Http client connection
@@ -98,22 +100,72 @@ namespace TogglAPI
         }
 
         /// <summary>
-        /// Send a request to the Web API 
+        /// Send a post request to the Web API
         /// </summary>
-        /// <returns></returns>
-        internal static async Task<string> SendAsync(string relativeUrl, HttpMethod method)
+        /// <param name="relativeUrl">The relative Url to the API</param>
+        /// <param name="json">The json content to send</param>
+        /// <returns>A task object with the respond string</returns>
+        internal static async Task<string> PostAsync(string relativeUrl, string json)
         {
-            HttpRequestMessage request = new HttpRequestMessage(method, Url + relativeUrl);
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, Url + relativeUrl);
+            request.Content = new StringContent(json);
             HttpResponseMessage response = await Client.SendAsync(request);
 
-            if (response.IsSuccessStatusCode)
-                return ExtractContent(response);
-            else
-            {
-                if (response.StatusCode == HttpStatusCode.Forbidden)
-                    throw new AuthenticationException("Email or password are not correct", (int)response.StatusCode);
-                throw new Exception();
-            }
+            if (!response.IsSuccessStatusCode)
+                ErrorHandling(response);
+            return ExtractContent(response);
+        }
+
+        /// <summary>
+        /// Send a put request to the Web API
+        /// </summary>
+        /// <param name="relativeUrl">The relative url to the item which should be updated</param>
+        /// <param name="json">The data to update with</param>
+        /// <returns>A string with the response from the update</returns>
+        internal static async Task<string> PutAsync(string relativeUrl, string json)
+        {
+            HttpResponseMessage response = await Client.PutAsync(Url + relativeUrl, new StringContent(json));
+
+            if (!response.IsSuccessStatusCode)
+                ErrorHandling(response);
+            return ExtractContent(response);
+        }
+
+        /// <summary>
+        /// Delete from the Web API 
+        /// </summary>
+        /// <param name="relativeUrl">The url to the item to be deleted</param>
+        internal static async Task DeleteAsync(string relativeUrl)
+        {
+            HttpResponseMessage response = await Client.DeleteAsync(Url + relativeUrl);
+
+            if (!response.IsSuccessStatusCode)
+                ErrorHandling(response);
+        }
+
+        /// <summary>
+        /// Send a GET request to the Web API 
+        /// </summary>
+        /// <returns>A string with the response</returns>
+        internal static async Task<string> GetAsync(string relativeUrl)
+        {
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, Url + relativeUrl);
+            HttpResponseMessage response = await Client.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+                ErrorHandling(response);
+            return ExtractContent(response);
+        }
+
+        /// <summary>
+        /// Handle errors when sending http requests
+        /// </summary>
+        /// <param name="response">The response from the request</param>
+        private static void ErrorHandling(HttpResponseMessage response)
+        {
+            if (response.StatusCode == HttpStatusCode.Forbidden)
+                throw new AuthenticationException("Email or password are not correct", (int)response.StatusCode);
+            throw new Exception();
         }
     }
 }

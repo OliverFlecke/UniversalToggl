@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -41,6 +42,14 @@ namespace TogglAPI
         /// </summary>
         [JsonProperty(PropertyName = "api_token")]
         public string Token { get; set; }
+
+
+        /// <summary>
+        /// The workspaces of the user
+        /// </summary>
+        [JsonProperty]
+        public List<Workspace> Workspaces { get; set; }
+
         #endregion
 
         /// <summary>
@@ -61,7 +70,7 @@ namespace TogglAPI
             return ConvertToBase64(Token + ":api_token");
         }
 
-        #region staticMethods
+        #region StaticMethods
         /// <summary>
         /// Convert a string in UTF8 to a base64 string
         /// </summary>
@@ -88,7 +97,7 @@ namespace TogglAPI
         /// <returns>The user that has connected to the Web API</returns>
         private static async Task<User> Logon()
         {
-            return CreateUserFromJSON(await Connection.SendAsync("me", HttpMethod.Get));
+            return CreateUserFromJSON(await Connection.GetAsync("me"));
         }
 
         /// <summary>

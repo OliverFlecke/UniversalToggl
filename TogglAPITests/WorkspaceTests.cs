@@ -11,6 +11,8 @@ namespace TogglAPITests
     [TestClass]
     public class WorkspaceTests
     {
+        internal static int workspaceId = 1888208;
+
         [TestInitialize]
         public void BeforeEach()
         {
@@ -19,6 +21,7 @@ namespace TogglAPITests
         }
 
         [TestMethod]
+        [TestCategory("Web API")]
         public void GetWorkspaces()
         {
             var task = Workspace.GetWorkspaces();

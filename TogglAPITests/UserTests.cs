@@ -9,9 +9,9 @@ namespace TogglAPITests
     [TestClass]
     public class UserTests
     {
-        private string apiToken = "e1f948fc1c6b2a09186309e61bfb4743";
-        private string email = "toggltestmail@outlook.com";
-        private int id = 2700947;
+        internal static string apiToken = "e1f948fc1c6b2a09186309e61bfb4743";
+        private static string email = "toggltestmail@outlook.com";
+        private static int id = 2700947;
 
 
         [TestInitialize]
@@ -28,6 +28,7 @@ namespace TogglAPITests
         }
 
         [TestMethod]
+        [TestCategory("Web API")]
         public void LoginWithEmailAndPasswordTest()
         {
             Task<User> userTask = User.Logon(email, "12345678");
@@ -41,6 +42,7 @@ namespace TogglAPITests
         }
 
         [TestMethod]
+        [TestCategory("Web API")]
         public void LoginWithAPItokenTest()
         {
             Task<User> task = User.Logon(apiToken);
@@ -50,10 +52,10 @@ namespace TogglAPITests
             Assert.AreEqual(email, user.Email);
             Assert.AreEqual(apiToken, user.Token);
             Assert.AreEqual(id, user.Id);
-            Assert.AreEqual("Toggltestmail", user.Fullname);
         }
 
         [TestMethod]
+        [TestCategory("Web API")]
         public void LoginWithWrongPasswordTest()
         {
             try
@@ -68,6 +70,23 @@ namespace TogglAPITests
                 Assert.AreEqual(403, authenEx.ResposeCode);
                 Assert.AreEqual("Email or password are not correct", authenEx.Message);
             }
+        }
+
+        [TestMethod]
+        [TestCategory("Web API")]
+        public void CheckCorrectParsingOfDataFromJsonTest()
+        {
+            var task = User.Logon(apiToken);
+            task.Wait();
+            User user = task.Result;
+
+            Assert.AreEqual(email, user.Email);
+            Assert.AreEqual(apiToken, user.Token);
+            Assert.AreEqual(id, user.Id);
+            Assert.AreEqual("Toggltestmail", user.Fullname);
+
+            Assert.IsNotNull(user.Workspaces);
+            Assert.IsTrue(user.Workspaces.Count >= 1);
         }
     }
 }
