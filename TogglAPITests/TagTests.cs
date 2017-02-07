@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TogglAPI;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace TogglAPITests
 {
@@ -65,7 +66,20 @@ namespace TogglAPITests
             Assert.AreEqual(WorkspaceTests.workspaceId, tag.WorkspaceId);
 
             // Clean up afterwards
-            Tag.DeleteTag(id);
+            Tag.DeleteTag(id).Wait();
+        }
+
+        [TestMethod]
+        [TestCategory("JSON Serializing")]
+        public void TagSerializingTest()
+        {
+            Tag tag = new Tag("Some name", 100);
+
+            string json = tag.Serialize();
+
+            JObject jsonObject = JObject.Parse(json);
+            Assert.AreEqual("Some name", jsonObject.SelectToken("name"));
+            Assert.AreEqual(100, jsonObject.SelectToken("wid")); 
         }
     }
 }

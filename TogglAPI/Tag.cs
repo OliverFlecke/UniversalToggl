@@ -8,13 +8,13 @@ namespace TogglAPI
     public class Tag
     {
         #region Properties
-        [JsonProperty]
+        [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
 
-        //[JsonProperty]
+        [JsonProperty(PropertyName = "id", Required = Required.AllowNull)]
         public int Id { get; set; }
 
-        [JsonProperty(PropertyName = "wid")]
+        [JsonProperty(PropertyName = "wid", Required = Required.AllowNull)]
         public int WorkspaceId { get; set; }
         #endregion
 
@@ -68,6 +68,15 @@ namespace TogglAPI
 
             string response = await Connection.PutAsync("tags/" + id, jsonObject.ToString());
             return CreateTagFromJSON(response);
+        }
+
+        /// <summary>
+        /// Serialize this object to json
+        /// </summary>
+        /// <returns>A string of JSON with the data from the tag</returns>
+        public string Serialize()
+        {
+            return JsonConvert.SerializeObject(this);
         }
 
         /// <summary>

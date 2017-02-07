@@ -109,6 +109,7 @@ namespace TogglAPI
         {
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, Url + relativeUrl);
             request.Content = new StringContent(json);
+            request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
             HttpResponseMessage response = await Client.SendAsync(request);
 
             if (!response.IsSuccessStatusCode)
@@ -122,7 +123,7 @@ namespace TogglAPI
         /// <param name="relativeUrl">The relative url to the item which should be updated</param>
         /// <param name="json">The data to update with</param>
         /// <returns>A string with the response from the update</returns>
-        internal static async Task<string> PutAsync(string relativeUrl, string json)
+        internal static async Task<string> PutAsync(string relativeUrl, string json = "")
         {
             HttpResponseMessage response = await Client.PutAsync(Url + relativeUrl, new StringContent(json));
 
@@ -139,7 +140,7 @@ namespace TogglAPI
         {
             HttpResponseMessage response = await Client.DeleteAsync(Url + relativeUrl);
 
-            if (!response.IsSuccessStatusCode)
+            if (response.StatusCode != HttpStatusCode.OK)
                 ErrorHandling(response);
         }
 
