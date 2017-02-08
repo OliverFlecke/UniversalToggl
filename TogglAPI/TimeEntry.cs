@@ -2,9 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace TogglAPI
@@ -39,11 +37,13 @@ namespace TogglAPI
         [JsonProperty(PropertyName = "description")]
         public string Description { get; set; }
 
-        [JsonProperty(PropertyName = "tags")]
-        public List<Tag> Tags { get; set; }
-
         [JsonProperty(PropertyName = "at")]
         public DateTime LastUpdated { get; set; }
+
+        [JsonProperty(PropertyName = "tags")]
+        public List<string> Tags { get; set; }
+
+        //public List<Tag> Tags { get; set; }
         #endregion
 
         public TimeEntry()
@@ -63,7 +63,21 @@ namespace TogglAPI
         /// <returns>A time entry object with the data from the json</returns>
         private static TimeEntry CreateTimeEntryFromJson(string json)
         {
-            return JsonConvert.DeserializeObject<TimeEntry>(JObject.Parse(json).SelectToken("data").ToString());
+            JObject data = JObject.Parse(json);
+            //JToken tagToken = data.SelectToken("tags");
+            //if (tagToken != null) data.Remove("tags");
+
+            TimeEntry entry = JsonConvert.DeserializeObject<TimeEntry>(data.ToString());
+
+            // Convert the list of names into tag objects - These objects will not have correct id or workspace id
+            //if (tagToken != null)
+            //{
+            //    List<string> tagNames = JsonConvert.DeserializeObject<List<string>>(tagToken.ToString());
+            //    entry.Tags = new List<Tag>(tagNames.Count);
+            //    foreach (string name in tagNames)
+            //        entry.Tags.Add(new Tag(name));
+            //}
+            return entry;
         }
 
         /// <summary>
@@ -75,6 +89,15 @@ namespace TogglAPI
             return JsonConvert.SerializeObject(this);
         }
 
+        /// <summary>
+        /// Convert a datetime object to the ISO 8601 format, which the Wep API requrie
+        /// </summary>
+        /// <param name="date">The date time object to convert</param>
+        /// <returns>A string with the date in ISO 8601 format</returns>
+        internal static string DateToISO8601(DateTime date)
+        {
+            return date.ToString("yyyy-MM-ddTHH:mm:sszzz");
+        }
 
         #region ExtractDataMethods
         /// <summary>
@@ -84,7 +107,7 @@ namespace TogglAPI
         public static async Task<TimeEntry> GetRunningTimeEntry()
         {
             string json = await Connection.GetAsync("time_entries/current");
-            return CreateTimeEntryFromJson(json);
+            return CreateTimeEntryFromJson(JObject.Parse(json).SelectToken("data").ToString());
         }
 
         /// <summary>
@@ -95,7 +118,7 @@ namespace TogglAPI
         public static async Task<TimeEntry> GetTimeEntry(int id)
         {
             string json = await Connection.GetAsync("time_entries/" + id);
-            return CreateTimeEntryFromJson(json);
+            return CreateTimeEntryFromJson(JObject.Parse(json).SelectToken("data").ToString());
         }
 
         /// <summary>
@@ -124,7 +147,7 @@ namespace TogglAPI
             jsonObject.Add("time_entry", entry);
 
             string response = await Connection.PostAsync("time_entries/start", jsonObject.ToString());
-            return CreateTimeEntryFromJson(response);
+            return CreateTimeEntryFromJson(JObject.Parse(response).SelectToken("data").ToString());
          }
 
         /// <summary>
@@ -145,7 +168,7 @@ namespace TogglAPI
             jsonObject.Add("time_entry", entry);
             
             string json = await Connection.PostAsync("time_entries", jsonObject.ToString());
-            return CreateTimeEntryFromJson(json);
+            return CreateTimeEntryFromJson(JObject.Parse(json).SelectToken("data").ToString());
         }
 
         /// <summary>
@@ -173,17 +196,36 @@ namespace TogglAPI
 
 
             string response = await Connection.PutAsync("time_entries/" + id, jsonObject.ToString());
-            return CreateTimeEntryFromJson(response);
+            return CreateTimeEntryFromJson(JObject.Parse(response).SelectToken("data").ToString());
         }
 
         /// <summary>
-        /// Convert a datetime object to the ISO 8601 format, which the Wep API requrie
+        /// Get a list of time entries in a specific time range 
         /// </summary>
-        /// <param name="date">The date time object to convert</param>
-        /// <returns>A string with the date in ISO 8601 format</returns>
-        internal static string DateToISO8601(DateTime date)
+        /// <param name="startDate">The start date to get the time entries from</param>
+        /// <param name="endDate">The end date to get the time entries from</param>
+        /// <returns>A list of time entries in the given time range</returns>
+        public static async Task<List<TimeEntry>> GetTimeEntriesInRange(DateTime startDate = default(DateTime), DateTime endDate = default(DateTime))
         {
-            return date.ToString("yyyy-MM-ddTHH:mm:sszzz");
+            string url = "time_entries";
+            if (startDate != default(DateTime))
+            {
+                url += "?start_date=" + WebUtility.UrlEncode(DateToISO8601(startDate));
+                if (endDate != default(DateTime))
+                {
+                    url += "&end_date=" + WebUtility.UrlEncode(DateToISO8601(endDate)); // TODO create relative url
+                }
+            }
+
+            string response = await Connection.GetAsync(url);
+
+            // The response need to be split into lists
+            List<TimeEntry> entries = JsonConvert.DeserializeObject<List<TimeEntry>>(response);
+            //List<TimeEntry> entries = new List<TimeEntry>(entriesData.Count);
+            //foreach (string data in entriesData)
+            //    entries.Add(CreateTimeEntryFromJson(data));
+
+            return entries;
         }
 
         /// <summary>
@@ -194,7 +236,7 @@ namespace TogglAPI
         public static async Task<TimeEntry> StopTimeEntry(int id)
         {
             string response = await Connection.PutAsync("time_entries/" + id + "/stop");
-            return CreateTimeEntryFromJson(response);
+            return CreateTimeEntryFromJson(JObject.Parse(response).SelectToken("data").ToString());
         }
 
         /// <summary>

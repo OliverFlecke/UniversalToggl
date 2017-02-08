@@ -132,7 +132,7 @@ namespace TogglAPITests
             Assert.AreEqual("New time entry", entry.Description);
 
             // Clean up
-            //TimeEntry.DeleteEntry(entry.Id).Wait();
+            TimeEntry.DeleteEntry(entry.Id).Wait();
         }
 
         [TestMethod]
@@ -140,6 +140,10 @@ namespace TogglAPITests
         [TestCategory("PUT")]
         public void StopTimeEntryTest()
         {
+            Task<TimeEntry> startTask = TimeEntry.StartTimeEntry("To be stopped");
+            startTask.Wait();
+            TimeEntry entry = startTask.Result;
+            
             // Let the time run for a bit before stopping the timer
             Thread.Sleep(2000);
 
@@ -147,15 +151,13 @@ namespace TogglAPITests
             stopTask.Wait();
             entry = stopTask.Result;
 
-            Assert.AreEqual(id, entry.Id);
-
             // Check if it is still stopped after a few seconds
             Thread.Sleep(2000);
             var task = TimeEntry.GetTimeEntry(entry.Id);
             task.Wait();
             TimeEntry updateEntry = task.Result;
 
-            Assert.AreEqual(id, updateEntry.Id);
+            Assert.AreEqual(entry.Id, updateEntry.Id);
             Assert.AreEqual(entry.Duration, updateEntry.Duration);
         }
 
@@ -211,7 +213,31 @@ namespace TogglAPITests
             entry = task.Result;
 
             Assert.AreEqual(id, entry.Id);
-            Assert.AreEqual(tags, entry.Tags);
+
+            // Test that the tags have the correct names
+            var enumerator = entry.Tags.GetEnumerator();
+            enumerator.MoveNext();
+            foreach (Tag tag in tags)
+            {
+                Assert.AreEqual(tag.Name, enumerator.Current);
+                enumerator.MoveNext();
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Web API")]
+        [TestCategory("GET")]
+        public void GetTimeEntriesInTimeRangeTest()
+        {
+            DateTime startDate = new DateTime(2017, 02, 1);
+            DateTime endDate = new DateTime(2017, 02, 7);
+
+            Task<List<TimeEntry>> task = TimeEntry.GetTimeEntriesInRange(startDate, endDate);
+            task.Wait();
+            List<TimeEntry> entries = task.Result;
+
+            Assert.IsNotNull(entries);
+            Assert.IsTrue(0 < entries.Count);
         }
 
         [TestMethod]
@@ -222,9 +248,9 @@ namespace TogglAPITests
             DateTime stop = new DateTime(2011, 11, 2);
             DateTime lastUpdated = new DateTime(2012, 12, 3);
 
-            List<Tag> tags = new List<Tag>();
-            tags.Add(new Tag("First", 100));
-            tags.Add(new Tag("Second", 200));
+            List<string> tags = new List<string>();
+            tags.Add("First");
+            tags.Add("Second");
 
             TimeEntry entry = new TimeEntry()
             {
@@ -256,12 +282,10 @@ namespace TogglAPITests
             Assert.AreEqual(true, jsonObject.SelectToken("billable"));
 
             // Test that the tags are read correctly
-            List<Tag> jsonTags = JsonConvert.DeserializeObject<List<Tag>>(jsonObject.SelectToken("tags").ToString());
+            List<string> jsonTags = JsonConvert.DeserializeObject<List<string>>(jsonObject.SelectToken("tags").ToString());
             Assert.AreEqual(2, jsonTags.Count);
-            Assert.AreEqual("First", jsonTags.ToArray()[0].Name);
-            Assert.AreEqual("Second", jsonTags.ToArray()[1].Name);
-            Assert.AreEqual(100, jsonTags.ToArray()[0].WorkspaceId);
-            Assert.AreEqual(200, jsonTags.ToArray()[1].WorkspaceId);
+            Assert.AreEqual("First", jsonTags.ToArray()[0]);
+            Assert.AreEqual("Second", jsonTags.ToArray()[1]);
         }
     }
 }
