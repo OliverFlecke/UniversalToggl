@@ -30,7 +30,7 @@ namespace TogglAPI
         /// <summary>
         /// Boolean to idicate if the client is alread connected
         /// </summary>
-        static private bool isConnected = false;
+        public static bool isConnected = false;
 
         /// <summary>
         /// Make the actual connection to the Web API
@@ -73,6 +73,7 @@ namespace TogglAPI
         /// </summary>
         public static void Reset()
         {
+            client.Dispose();
             client = new HttpClient();
             isConnected = false;
         }

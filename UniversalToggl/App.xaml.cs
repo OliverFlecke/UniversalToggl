@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using TogglAPI;
 
 namespace UniversalToggl
 {
@@ -22,6 +23,8 @@ namespace UniversalToggl
     /// </summary>
     sealed partial class App : Application
     {
+        public static User user;
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -32,12 +35,27 @@ namespace UniversalToggl
             this.Suspending += OnSuspending;
         }
 
+        private void App_BackRequested(object sender, Windows.UI.Core.BackRequestedEventArgs e)
+        {
+            Frame rootFrame = Window.Current.Content as Frame;
+            if (rootFrame == null)
+                return;
+
+            // Navigate back if possible, and if the event has not 
+            // already been handled .
+            if (rootFrame.CanGoBack && e.Handled == false)
+            {
+                e.Handled = true;
+                rootFrame.GoBack();
+            }
+        }
+
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        protected async override void OnLaunched(LaunchActivatedEventArgs e)
         {
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
@@ -71,8 +89,17 @@ namespace UniversalToggl
                 {
                     // When the navigation stack isn't restored navigate to the first page,
                     // configuring the new page by passing required information as a navigation
-                    // parameter
-                    rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                    // 
+                    if (user == null)
+                        rootFrame.Navigate(typeof(LoginPage), e.Arguments);
+                    else
+                    {
+                        // Test if it is possible to login with the token we have
+                        user = await User.Logon(user.GetAuthenticationToken());
+                        if (user == null)
+                            rootFrame.Navigate(typeof(LoginPage), "Could not find your Toggl account information. Please login again.");
+                        rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                    }
                 }
                 // Ensure the current window is active
                 Window.Current.Activate();

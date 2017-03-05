@@ -5,25 +5,52 @@
     xmlns:local="using:UniversalToggl"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:TogglAPI="using:TogglAPI"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-        </Grid.RowDefinitions>
-        <TextBlock Text="Universal Toggl" FontFamily="{StaticResource PivotTitleFontFamily}" FontSize="{StaticResource TextStyleExtraLargeFontSize}"></TextBlock>
-        <ListBox Grid.Row="1">
-            <ListBoxItem>
-                
-            </ListBoxItem>
-        </ListBox>
+    <SplitView IsPaneOpen="False"
+               DisplayMode="CompactOverlay">
+        <SplitView.Pane>
+            <StackPanel Margin="12">
+                <SymbolIcon Symbol="Placeholder"/>
+            </StackPanel>
+        </SplitView.Pane>        
+        <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Universal Toggl" 
+                       FontFamily="{StaticResource PivotTitleFontFamily}" 
+                       FontSize="{StaticResource TextStyleExtraLargeFontSize}"
+                       Margin="6,0,0,6"/>
 
-        <AppBar Grid.Row="2"  VerticalAlignment="Bottom">
-            <AppBarButton>
+            <ListView Grid.Row="1"
+                ItemsSource="{x:Bind TimeEntries}">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="TogglAPI:TimeEntry">
+                        <StackPanel Orientation="Horizontal">
+                            <SymbolIcon Symbol="Play" Margin="0,12,12,12"/>
+                            <StackPanel>
+                                <TextBlock Text="{x:Bind Description}"
+                                           FontWeight="Bold"/>
+                                <TextBlock Text="{x:Bind ProjectId}"
+                                           FontSize="10"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <!--d:DataContext="{StaticResource SampleData}"-->
+            </ListView>
+            
+            
+            
+            <AppBar Grid.Row="2"  VerticalAlignment="Bottom">
+                <AppBarButton>
                 
-            </AppBarButton>
-        </AppBar>
-    </Grid>
+                </AppBarButton>
+            </AppBar>
+        </Grid>
+    </SplitView>
 </Page>

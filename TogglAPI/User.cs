@@ -98,7 +98,7 @@ namespace TogglAPI
         }
 
         /// <summary>
-        /// Let the user connect with an emal and a password
+        /// Let the user connect with an email and a password
         /// </summary>
         /// <param name="email">The users email</param>
         /// <param name="password">The password assosieted with the users email</param>

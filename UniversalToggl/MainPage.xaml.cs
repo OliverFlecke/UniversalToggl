@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using System.Collections.ObjectModel;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -23,19 +24,21 @@ namespace UniversalToggl
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private List<TimeEntry> timeEntries;
-        private User user;
+        private ObservableCollection<TimeEntry> timeEntries = new ObservableCollection<TimeEntry>();
+        public ObservableCollection<TimeEntry> TimeEntries { get { return this.timeEntries; } }
 
         public MainPage()
         {
             this.InitializeComponent();
 
-            // This logon is just for testing
-            var logon = User.Logon("e1f948fc1c6b2a09186309e61bfb4743");
-            logon.Wait();
-            user = logon.Result;
+            UpdateTimeEntries();
+        }
 
-            
+        public async void UpdateTimeEntries()
+        {
+            var entries = await TimeEntry.GetTimeEntriesInRange();
+            foreach (TimeEntry entry in entries)
+                timeEntries.Add(entry);
         }
     }
 }

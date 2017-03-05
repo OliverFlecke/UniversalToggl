@@ -199,13 +199,20 @@ namespace TogglAPI
             return CreateTimeEntryFromJson(JObject.Parse(response).SelectToken("data").ToString());
         }
 
+        public static async Task<List<TimeEntry>> GetTimeEntriesInRange()
+        {
+            string response = await Connection.GetAsync("time_entries");
+
+            return JsonConvert.DeserializeObject<List<TimeEntry>>(response);
+        }
+
         /// <summary>
         /// Get a list of time entries in a specific time range 
         /// </summary>
         /// <param name="startDate">The start date to get the time entries from</param>
         /// <param name="endDate">The end date to get the time entries from</param>
         /// <returns>A list of time entries in the given time range</returns>
-        public static async Task<List<TimeEntry>> GetTimeEntriesInRange(DateTime startDate = default(DateTime), DateTime endDate = default(DateTime))
+        public static async Task<List<TimeEntry>> GetTimeEntriesInRange(DateTime startDate, DateTime endDate)
         {
             string url = "time_entries";
             if (startDate != default(DateTime))

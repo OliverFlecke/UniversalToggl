@@ -236,6 +236,27 @@ namespace TogglAPITests
             task.Wait();
             List<TimeEntry> entries = task.Result;
 
+            foreach (TimeEntry entry in entries)
+                Trace.WriteLine(entry.Description);
+
+            Assert.IsNotNull(entries);
+            Assert.IsTrue(0 < entries.Count);
+        }
+
+        [TestMethod]
+        [TestCategory("Web API")]
+        [TestCategory("GET")]
+        public void GetLatestTimeEntries()
+        {
+            var task = TimeEntry.GetTimeEntriesInRange();
+            task.Wait();
+            var entries = task.Result;
+
+            foreach (TimeEntry entry in entries)
+            {
+                Trace.WriteLine(entry.Description);
+            }
+
             Assert.IsNotNull(entries);
             Assert.IsTrue(0 < entries.Count);
         }
