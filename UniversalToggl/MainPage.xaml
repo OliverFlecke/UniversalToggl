@@ -8,98 +8,41 @@
     xmlns:TogglAPI="using:TogglAPI"
     mc:Ignorable="d">
 
-    <!--<SplitView x:Name="splitView" IsPaneOpen="False"
-               DisplayMode="CompactOverlay">
-        <SplitView.Pane>
-            <Grid HorizontalAlignment="Left" Margin="12">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="auto" />
-                </Grid.RowDefinitions>
-                <StackPanel Grid.Row="0">
-                    <StackPanel x:Name="Menu_button" Orientation="Horizontal"
-                                Margin="0,0,0,12"
-                                Tapped="Menu_button_Tapped">
-                        <SymbolIcon Symbol="Placeholder"
-                                        Opacity="100"/>
-                        --><!--<TextBlock Text="Universal Toggl"
-                                   Margin="16,0"/>--><!--
-                    </StackPanel>
+ 
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <TextBlock Text="Universal Toggl" 
+                            FontFamily="{StaticResource PivotTitleFontFamily}" 
+                            FontSize="{StaticResource HubHeaderThemeFontSize}"
+                            Margin="6,0,0,6"/>
 
-                    <StackPanel Orientation="Horizontal"
-                                Margin="0,12">
-                        <SymbolIcon Symbol="Home"/>
-                        <TextBlock Text="Time Entries"
-                                   Margin="16,0"/>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal"
-                                Margin="0,12">
-                        <SymbolIcon Symbol="Placeholder"/>
-                        <TextBlock Text="Projects"
-                                   Margin="16,0"/>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal"
-                                Margin="0,12">
-                        <SymbolIcon Symbol="Placeholder"/>
-                        <TextBlock Text="Workspaces"
-                                   Margin="16,0"/>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal"
-                                Margin="0,12">
-                        <SymbolIcon Symbol="Tag"/>
-                        <TextBlock Text="Tags"
-                                   Margin="16,0"/>
-                    </StackPanel>
-                </StackPanel>
-
-                <StackPanel Grid.Row="1">
+        <ListView Grid.Row="1"
+                    ItemsSource="{x:Bind TimeEntries}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="TogglAPI:TimeEntry">
                     <StackPanel Orientation="Horizontal">
-                        <SymbolIcon Symbol="Setting"
-                                    Margin="0"/>
-                        <TextBlock Text="Settings"
-                                   Margin="16,0"/>
-                    </StackPanel>
-                </StackPanel>
-            </Grid>
-        </SplitView.Pane>-->
-        <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
-            </Grid.RowDefinitions>
-            <TextBlock Text="Universal Toggl" 
-                                FontFamily="{StaticResource PivotTitleFontFamily}" 
-                                FontSize="{StaticResource HubHeaderThemeFontSize}"
-                                Margin="6,0,0,6"/>
-
-            <ListView Grid.Row="1"
-                        ItemsSource="{x:Bind TimeEntries}">
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="TogglAPI:TimeEntry">
-                        <StackPanel Orientation="Horizontal">
-                            <SymbolIcon Symbol="Play" Margin="0,12,12,12"/>
-                            <StackPanel>
-                                <TextBlock Text="{x:Bind Description}"
-                                                    Style="{ThemeResource SubtitleTextBlockStyle}"/>
-                                <TextBlock Text="{x:Bind ProjectName}"
-                                                    Style="{ThemeResource BodyTextBlockStyle}"/>
-                            </StackPanel>
+                        <SymbolIcon Symbol="Play" Margin="0,12,12,12"/>
+                        <StackPanel>
+                            <TextBlock Text="{x:Bind Description}"
+                                                Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                            <TextBlock Text="{x:Bind ProjectName}"
+                                                Style="{ThemeResource BodyTextBlockStyle}"/>
                         </StackPanel>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
 
 
 
-            <CommandBar Grid.Row="2"
-                            VerticalAlignment="Bottom"
-                            ClosedDisplayMode="Compact">
-                <AppBarButton Icon="Add" Label="Add"/>
-            </CommandBar>
-        </Grid>
-    <!--</SplitView>-->
+        <CommandBar Grid.Row="2"
+                        VerticalAlignment="Bottom"
+                        ClosedDisplayMode="Compact">
+            <AppBarButton Icon="Add" Label="Add"/>
+        </CommandBar>
+    </Grid>
 </Page>

@@ -14,8 +14,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using System.Collections.ObjectModel;
-using Windows.Security.Credentials;
-
+using System.Threading.Tasks;
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
 namespace UniversalToggl
@@ -52,22 +51,26 @@ namespace UniversalToggl
             this.InitializeComponent();
 
             Setup();
-            UpdateTimeEntries();
         }
 
         public async void Setup()
         {
-            LoginDialog loginDialog = new LoginDialog();
-            string username = App.localStorage.Values["username"] as string;
-            if (username == null)
+            if (App.user == null)
             {
-                await loginDialog.ShowAsync();
+                LoginDialog loginDialog = new LoginDialog();
+                string username = App.localStorage.Values["username"] as string;
+                if (username == null)
+                {
+                    await loginDialog.ShowAsync();
+                }
+                else
+                {
+                    var credentials = App.vault.Retrieve(App.AppName, username);
+                    loginDialog.LoginWithCredentials(credentials);
+                }
             }
-            else
-            {
-                var credentials = App.vault.Retrieve(App.AppName, username);
-                loginDialog.LoginWithCredentials(credentials);
-            }
+
+            UpdateTimeEntries();
         }
 
         public async void UpdateTimeEntries()
@@ -88,6 +91,7 @@ namespace UniversalToggl
             }
 
             var entries = await TimeEntry.GetTimeEntriesInRange();
+            entries.Reverse();
             foreach (TimeEntry entry in entries)
             {
                 // TODO Find a cleaner way to do this

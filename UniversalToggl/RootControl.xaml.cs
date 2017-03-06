@@ -50,13 +50,44 @@ namespace UniversalToggl
         {
             if (currentPage != pageSourceType)
             {
+                splitView.IsPaneOpen = false;
                 RootFrame.Navigate(pageSourceType);
             }
         }
 
+        /// <summary>
+        /// Open and close the pane manu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MenuButton_Click(object sender, RoutedEventArgs e)
         {
             splitView.IsPaneOpen = !splitView.IsPaneOpen;
+        }
+
+        private void HomeButton_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            Navigate(typeof(MainPage));
+        }
+
+        private void SettingsButton_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            Navigate(typeof(SettingsPage));
+        }
+
+        private void ProjectButton_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            Navigate(typeof(ProjectPage));
+        }
+
+        private void WorkspacesButton_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            //Navigate(typeof(WorkspacePage));
+        }
+
+        private void TagsButton_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            //Navigate(typeof(TagsPage));
         }
     }
 }

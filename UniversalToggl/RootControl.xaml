@@ -35,157 +35,27 @@
                 <Setter Property="RequestedTheme" Value="Dark" />
             </Style>
 
-            <Style TargetType="TextBlock" x:Key="SplitViewTextBlockStyle">
-                <Setter Property="VerticalAlignment" Value="Center" />
-                <Setter Property="HorizontalAlignment" Value="Center" />
+            <Style x:Key="HamburgerButtonStyle" TargetType="ToggleButton">
+                <Setter Property="Content" Value="" />
                 <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
-                <Setter Property="FontSize" Value="{ThemeResource SplitViewNormalNavFontSize}" />
+                <Setter Property="FontSize" Value="20" />
+                <Setter Property="MinHeight" Value="48" />
+                <Setter Property="MinWidth" Value="48" />
             </Style>
 
-            <Style TargetType="RadioButton" x:Key="SplitViewRadioButtonStyle">
-                <Setter Property="Background" Value="Transparent" />
-                <Setter Property="Foreground" Value="{ThemeResource SplitViewForegroundBrush}" />
-                <Setter Property="Padding" Value="1,4,0,0" />
-                <Setter Property="HorizontalAlignment" Value="Stretch" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-                <Setter Property="HorizontalContentAlignment" Value="Left" />
-                <Setter Property="VerticalContentAlignment" Value="Center" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="RadioButton">
-                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup x:Name="CommonStates">
-                                        <VisualState x:Name="Normal" />
-                                        <VisualState x:Name="PointerOver">
-                                            <Storyboard>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="HoverBackground">
-                                                    <DiscreteObjectKeyFrame KeyTime="0">
-                                                        <DiscreteObjectKeyFrame.Value>
-                                                            <Visibility>Visible</Visibility>
-                                                        </DiscreteObjectKeyFrame.Value>
-                                                    </DiscreteObjectKeyFrame>
-                                                </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="CheckedHoverBackground">
-                                                    <DiscreteObjectKeyFrame KeyTime="0">
-                                                        <DiscreteObjectKeyFrame.Value>
-                                                            <Visibility>Visible</Visibility>
-                                                        </DiscreteObjectKeyFrame.Value>
-                                                    </DiscreteObjectKeyFrame>
-                                                </ObjectAnimationUsingKeyFrames>
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="Pressed">
-                                            <Storyboard>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="PressedBackground">
-                                                    <DiscreteObjectKeyFrame KeyTime="0">
-                                                        <DiscreteObjectKeyFrame.Value>
-                                                            <Visibility>Visible</Visibility>
-                                                        </DiscreteObjectKeyFrame.Value>
-                                                    </DiscreteObjectKeyFrame>
-                                                </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="CheckedPressedBackground">
-                                                    <DiscreteObjectKeyFrame KeyTime="0">
-                                                        <DiscreteObjectKeyFrame.Value>
-                                                            <Visibility>Visible</Visibility>
-                                                        </DiscreteObjectKeyFrame.Value>
-                                                    </DiscreteObjectKeyFrame>
-                                                </ObjectAnimationUsingKeyFrames>
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="Disabled">
-                                            <Storyboard>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NixonGlyph" Storyboard.TargetProperty="Foreground">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RadioButtonContentDisabledForegroundThemeBrush}" />
-                                                </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RadioButtonContentDisabledForegroundThemeBrush}" />
-                                                </ObjectAnimationUsingKeyFrames>
-                                            </Storyboard>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                    <VisualStateGroup x:Name="CheckStates">
-                                        <VisualState x:Name="Checked">
-                                            <Storyboard>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="CheckedBackground">
-                                                    <DiscreteObjectKeyFrame KeyTime="0">
-                                                        <DiscreteObjectKeyFrame.Value>
-                                                            <Visibility>Visible</Visibility>
-                                                        </DiscreteObjectKeyFrame.Value>
-                                                    </DiscreteObjectKeyFrame>
-                                                </ObjectAnimationUsingKeyFrames>
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="Unchecked" />
-                                        <VisualState x:Name="Indeterminate" />
-                                    </VisualStateGroup>
-                                    <VisualStateGroup x:Name="FocusStates">
-                                        <VisualState x:Name="Focused">
-                                            <Storyboard>
-                                                <DoubleAnimation Duration="0" Storyboard.TargetName="FocusVisualWhite" Storyboard.TargetProperty="Opacity" To="1" />
-                                                <DoubleAnimation Duration="0" Storyboard.TargetName="FocusVisualBlack" Storyboard.TargetProperty="Opacity" To="1" />
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="Unfocused" />
-                                        <VisualState x:Name="PointerFocused" />
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                                <Grid>
-
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="48" />
-                                    </Grid.RowDefinitions>
-
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="48" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="20" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <Grid.Resources>
-                                        <Style TargetType="Rectangle" x:Name="FocusVisual">
-                                            <Setter Property="Opacity" Value="0" />
-                                            <Setter Property="StrokeDashArray" Value="1,1" />
-                                            <Setter Property="StrokeEndLineCap" Value="Square" />
-                                        </Style>
-                                    </Grid.Resources>
-
-                                    <!-- background -->
-
-                                    <Grid x:Name="NotCheckedBackground" Grid.ColumnSpan="4">
-                                        <Rectangle x:Name="PressedBackground" Visibility="Collapsed" Fill="{StaticResource NavButtonPressedBackgroundBrush}"/>
-                                        <Rectangle x:Name="HoverBackground" Visibility="Collapsed" Fill="{StaticResource NavButtonHoverBackgroundBrush}"/>
-                                    </Grid>
-                                    <Grid x:Name="CheckedBackground" Grid.ColumnSpan="4" Visibility="Collapsed" Background="{StaticResource NavButtonCheckedBackgroundBrush}">
-                                        <Rectangle x:Name="CheckedPressedBackground" Visibility="Collapsed" Fill="{StaticResource NavButtonCheckedPressedBackgroundBrush}"/>
-                                        <Rectangle x:Name="CheckedHoverBackground" Visibility="Collapsed" Fill="{StaticResource NavButtonCheckedHoverBackgroundBrush}"/>
-                                    </Grid>
-
-                                    <!-- focus -->
-                                    <Rectangle x:Name="FocusVisualWhite" Stroke="{ThemeResource FocusVisualWhiteStrokeThemeBrush}" StrokeDashOffset="1.5" Style="{StaticResource FocusVisual}" />
-                                    <Rectangle x:Name="FocusVisualBlack" Stroke="{ThemeResource FocusVisualBlackStrokeThemeBrush}" StrokeDashOffset="0.5" Style="{StaticResource FocusVisual}" />
-
-                                    <!-- glyph -->
-                                    <ContentPresenter x:Name="NixonGlyph" Content="{TemplateBinding Tag}" />
-
-                                    <!-- text -->
-                                    <ContentPresenter x:Name="ContentPresenter"
-                        			Grid.Column="1"
-                        			Margin="{TemplateBinding Padding}"
-                        			HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                        			VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                        			AutomationProperties.AccessibilityView="Raw"
-                        			Content="{TemplateBinding Content}"
-                        			ContentTemplate="{TemplateBinding ContentTemplate}"
-                        			ContentTransitions="{TemplateBinding ContentTransitions}" />
-                                </Grid>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
+            <Style x:Key="NavbarButtonStyle" TargetType="AppBarButton">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Width" Value="50"/>
+                <Setter Property="Height" Value="50"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
             </Style>
-
-            <Style TargetType="RadioButton" BasedOn="{StaticResource SplitViewRadioButtonStyle}" />
+            <Style x:Key="NavbarStackPanelStyle" TargetType="StackPanel">
+                <Setter Property="Orientation" Value="Horizontal"/>
+            </Style>
+            <Style x:Key="NavbarLabelStyle" TargetType="TextBlock">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="FontSize" Value="18"/>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -195,33 +65,59 @@
             <Grid Background="{StaticResource SplitViewBackgroundBrush}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" 
+                                   MinHeight="60"/>
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0">
-                    <AppBarButton x:Name="MenuButton" Icon="Placeholder"
-                                  Width="50"
-                                  MinWidth="50" Click="MenuButton_Click"/>
 
-                    <AppBarButton Icon="Home"
-                                  Width="50"
-                                  Content="Time Entries"/>
+                    <ToggleButton x:Name="MenuButton" 
+                                  Style="{StaticResource HamburgerButtonStyle}" 
+                                  Click="MenuButton_Click"/>
 
-                    <AppBarButton Icon="Placeholder"
-                                  Width="50"
-                                  Content="Projects"/>
-                    <AppBarButton Icon="Placeholder"
-                                  Width="50"
-                                  Content="Workspaces" />
-                    <AppBarButton Icon="Tag"
-                                  Width="50"
-                                  Content="Tags"/>
+                    <StackPanel Style="{StaticResource NavbarStackPanelStyle}"
+                                x:Name="HomeButton"
+                                Tapped="HomeButton_Tapped">
+                        <AppBarButton Style="{StaticResource NavbarButtonStyle}"
+                                      Icon="Home"/>
+                        <TextBlock Text="Time Entries"
+                                   Style="{StaticResource NavbarLabelStyle}"/>
+                    </StackPanel>
+
+                    <StackPanel Style="{StaticResource NavbarStackPanelStyle}"
+                                x:Name="ProjectButton"
+                                Tapped="ProjectButton_Tapped">
+                        <AppBarButton Style="{StaticResource NavbarButtonStyle}"
+                                      Icon="Placeholder"/>
+                        <TextBlock Text="Projects"
+                                   Style="{StaticResource NavbarLabelStyle}"/>
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource NavbarStackPanelStyle}"
+                                x:Name="WorkspacesButton"
+                                Tapped="WorkspacesButton_Tapped">
+                        <AppBarButton Style="{StaticResource NavbarButtonStyle}"
+                                      Icon="Placeholder"/>
+                        <TextBlock Text="Workspaces"
+                                   Style="{StaticResource NavbarLabelStyle}"/>
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource NavbarStackPanelStyle}"
+                                x:Name="TagsButton"
+                                Tapped="TagsButton_Tapped">
+                        <AppBarButton Style="{StaticResource NavbarButtonStyle}"
+                                      Icon="Tag"/>
+                        <TextBlock Text="Tags"
+                                   Style="{StaticResource NavbarLabelStyle}"/>
+                    </StackPanel>
 
                 </StackPanel>
-                <StackPanel Grid.Row="1">
-                    <AppBarButton Icon="Setting"
-                                  Content="Settings"
-                                    Width="50"
-                                    MinWidth="50"/>
+                <StackPanel Grid.Row="1" VerticalAlignment="Bottom">
+                    <StackPanel x:Name="SettingsButton"
+                                Style="{StaticResource NavbarStackPanelStyle}"
+                                Tapped="SettingsButton_Tapped">
+                        <AppBarButton Style="{StaticResource NavbarButtonStyle}"
+                                      Icon="Setting"/>
+                        <TextBlock Style="{StaticResource NavbarLabelStyle}"
+                                   Text="Settings"/>
+                    </StackPanel>
                 </StackPanel>
             </Grid>
         </SplitView.Pane>
