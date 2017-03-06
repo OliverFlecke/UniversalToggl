@@ -15,6 +15,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using TogglAPI;
+using Windows.Security.Credentials;
+using Windows.Storage;
 
 namespace UniversalToggl
 {
@@ -23,7 +25,12 @@ namespace UniversalToggl
     /// </summary>
     sealed partial class App : Application
     {
+        public static string AppName = "UniversalToggl";
+
         public static User user;
+
+        public static ApplicationDataContainer localStorage = ApplicationData.Current.LocalSettings;
+        public static PasswordVault vault = new PasswordVault();
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -55,7 +62,7 @@ namespace UniversalToggl
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
-        protected async override void OnLaunched(LaunchActivatedEventArgs e)
+        protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
@@ -63,16 +70,16 @@ namespace UniversalToggl
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
-            Frame rootFrame = Window.Current.Content as Frame;
+            var rootFrame = Window.Current.Content as RootControl;
 
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
             if (rootFrame == null)
             {
                 // Create a Frame to act as the navigation context and navigate to the first page
-                rootFrame = new Frame();
+                rootFrame = new RootControl();
 
-                rootFrame.NavigationFailed += OnNavigationFailed;
+                rootFrame.RootFrame.NavigationFailed += OnNavigationFailed;
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
@@ -85,21 +92,28 @@ namespace UniversalToggl
 
             if (e.PrelaunchActivated == false)
             {
-                if (rootFrame.Content == null)
+                if (rootFrame.RootFrame.Content == null)
                 {
-                    // When the navigation stack isn't restored navigate to the first page,
-                    // configuring the new page by passing required information as a navigation
-                    // 
-                    if (user == null)
-                        rootFrame.Navigate(typeof(LoginPage), e.Arguments);
-                    else
-                    {
-                        // Test if it is possible to login with the token we have
-                        user = await User.Logon(user.GetAuthenticationToken());
-                        if (user == null)
-                            rootFrame.Navigate(typeof(LoginPage), "Could not find your Toggl account information. Please login again.");
-                        rootFrame.Navigate(typeof(MainPage), e.Arguments);
-                    }
+                    rootFrame.RootFrame.Navigate(typeof(MainPage));
+                    //string username = (string)localStorage.Values["username"];
+                    //if (username == null)
+                    //{
+                    //    //rootFrame.RootFrame.Navigate(typeof(LoginPage));
+                    //}
+                    //else
+                    //{
+                    //    PasswordCredential credential =  vault.Retrieve(AppName, username);
+                    //    rootFrame.RootFrame.Navigate(typeof(LoginPage), credential);
+                    //}
+
+                    //if (username == null)
+                    //{
+                    //}
+                    //else
+                    //{
+                    //    PasswordCredential credential = vault.Retrieve(AppName, username);
+                    //    rootFrame.RootFrame.Navigate(typeof(MainPage), credential);
+                    //}
                 }
                 // Ensure the current window is active
                 Window.Current.Activate();

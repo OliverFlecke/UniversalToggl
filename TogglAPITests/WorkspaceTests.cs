@@ -22,6 +22,7 @@ namespace TogglAPITests
 
         [TestMethod]
         [TestCategory("Web API")]
+        [TestCategory("GET")]
         public void GetWorkspaces()
         {
             var task = Workspace.GetWorkspaces();
@@ -37,6 +38,24 @@ namespace TogglAPITests
             Workspace second = workspaces[1];
             Assert.AreEqual(1888354, second.Id);
             Assert.AreEqual("TestWorkspace", second.Name);
+        }
+
+        [TestMethod]
+        [TestCategory("Web API")]
+        [TestCategory("GET")]
+        public void GetWorkspaceProjcetsTest()
+        {
+            var task = Workspace.GetWorkspaceProjects(workspaceId);
+            task.Wait();
+            var projects = task.Result;
+
+            Assert.AreEqual(2, projects.Count);
+            Project first = projects[0];
+            Assert.AreEqual("Second project", first.Name);
+            Assert.IsTrue(0 < first.ProjectID);
+
+            Project second = projects[1];
+            Assert.AreEqual("Toggl Testing", second.Name);
         }
     }
 }

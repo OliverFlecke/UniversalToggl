@@ -19,6 +19,8 @@ namespace TogglAPI
         [JsonProperty(PropertyName = "pid")]
         public int ProjectId { get; set; }
 
+        public string ProjectName { get; set; }
+
         [JsonProperty(PropertyName = "tid")]
         public int TaskId { get; set; }
 

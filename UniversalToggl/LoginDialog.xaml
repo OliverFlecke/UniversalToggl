@@ -1,0 +1,36 @@
+﻿<ContentDialog
+    x:Class="UniversalToggl.LoginDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UniversalToggl"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    FullSizeDesired="True"
+    PrimaryButtonText="Sign in"
+    PrimaryButtonClick="Login_button_Click"
+    IsPrimaryButtonEnabled="False"
+    Background="{ThemeResource AppBarBackgroundThemeBrush}">
+
+    <StackPanel Grid.Row="1"
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch"
+                Margin="12,0">
+        <TextBlock x:Name="ErrorMessage" Visibility="Collapsed" 
+                       Foreground="Red" />
+
+        <TextBox x:Name="Email_box" 
+                     IsEnabled="True"
+                     Header="Email"
+                     PlaceholderText="Enter your email"
+                     Background="Red" Margin="0,12"/>
+        <PasswordBox x:Name="Password_box" Margin="0,12"
+                     Header="Password"
+                     PlaceholderText="Enter your password"
+                     Background="Red"
+                     KeyDown="Password_box_KeyDown"/>
+        <CheckBox Name="revealModeCheckBox" Content="Show password"
+              IsChecked="False"
+              Checked="CheckBox_Changed" Unchecked="CheckBox_Changed"/>
+    </StackPanel>
+</ContentDialog>

@@ -12,35 +12,36 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using TogglAPI;
-using System.Threading.Tasks;
 using Windows.Security.Credentials;
+using TogglAPI;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
+// The Content Dialog item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace UniversalToggl
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class LoginPage : Page
+    public sealed partial class LoginDialog : ContentDialog
     {
-        public LoginPage()
+        public LoginDialog()
         {
             this.InitializeComponent();
         }
-
-        private async void Login_button_Click(object sender, RoutedEventArgs e)
+        private void Login_button_Click(object sender, ContentDialogButtonClickEventArgs e)
         {
-            string email = this.Email_box.Text;
-            string password = this.Password_box.Password;
+            Login();
+        }
+
+        /// <summary>
+        /// Login with the details provided
+        /// </summary>
+        private async void Login(string email, string password)
+        {
             try
             {
                 App.user = await User.Logon(email, password);
 
                 App.localStorage.Values["username"] = email;
                 App.vault.Add(new PasswordCredential(App.AppName, email, password));
-                this.Frame.Navigate(typeof(MainPage));
+                this.Hide();
             }
             catch (AuthenticationException)
             {
@@ -49,6 +50,16 @@ namespace UniversalToggl
                 this.Password_box.Password = "";
                 Connection.Reset();
             }
+        }
+
+        private void Login()
+        {
+            Login(this.Email_box.Text, this.Password_box.Password);
+        }
+
+        public void LoginWithCredentials(PasswordCredential credentials)
+        {
+            Login(credentials.UserName, credentials.Password);
         }
 
         private void CheckBox_Changed(object sender, RoutedEventArgs e)
@@ -67,28 +78,12 @@ namespace UniversalToggl
         private void Password_box_KeyDown(object sender, KeyRoutedEventArgs e)
         {
             if (e.Key == Windows.System.VirtualKey.Enter)
-                Login_button_Click(this, new RoutedEventArgs());
-        }
+                Login();
 
-        protected async override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-
-            try
-            {
-                PasswordCredential credentials = (PasswordCredential)e.Parameter;
-
-                // TODO Display some kind of loading animation
-                Email_box.IsEnabled = false;
-                Password_box.IsEnabled = false;
-                Login_button.IsEnabled = false;
-                App.user = await User.Logon(credentials.UserName, credentials.Password);
-                this.Frame.Navigate(typeof(MainPage));
-            }
-            catch (Exception)
-            {
-
-            }
+            if (Password_box.Password == "")
+                this.IsPrimaryButtonEnabled = false;
+            else
+                this.IsPrimaryButtonEnabled = true;
         }
     }
 }

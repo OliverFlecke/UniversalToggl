@@ -21,5 +21,11 @@ namespace TogglAPI
             string content = await Connection.GetAsync("workspaces");
             return JsonConvert.DeserializeObject<List<Workspace>>(content);
         }
+
+        public static async Task<List<Project>> GetWorkspaceProjects(int workspaceID)
+        {
+            string content = await Connection.GetAsync("workspaces/" + workspaceID + "/projects");
+            return JsonConvert.DeserializeObject<List<Project>>(content);
+        }
     }
 }
