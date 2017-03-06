@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="UniversalToggl.ProjectPage"
+    x:Class="UniversalToggl.WorkspacePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:UniversalToggl"
@@ -10,29 +10,22 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
-        <TextBlock Text="Projects"
+        <TextBlock Text="Workspaces"
                    Margin="12,0"
                    FontSize="{StaticResource HubHeaderThemeFontSize}"/>
         <ListView Grid.Row="1"
                   Margin="0,12,0,0"
-                  ItemsSource="{x:Bind ViewModel}">
+                  ItemsSource="{x:Bind Workspaces}" SelectionChanged="ListView_SelectionChanged">
             <ListView.ItemTemplate>
-                <DataTemplate x:DataType="local:WorkspaceViewModel">
-                    <StackPanel>
-                        <TextBlock Text="{x:Bind Name}"
-                                   Style="{ThemeResource SubtitleTextBlockStyle}"
-                                   Foreground="Crimson"/>
-                        <ListView ItemsSource="{x:Bind Projects}">
-                            <ListView.ItemTemplate>
-                                <DataTemplate x:DataType="TogglAPI:Project">
-                                    <TextBlock Text="{x:Bind Name}"/>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
+                <DataTemplate x:DataType="TogglAPI:Workspace">
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel>
+                            <TextBlock Text="{x:Bind Name}"
+                                       Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                        </StackPanel>
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>

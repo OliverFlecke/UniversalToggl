@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Navigation;
 using TogglAPI;
 using Windows.Security.Credentials;
 using Windows.Storage;
+using Windows.UI.ViewManagement;
 
 namespace UniversalToggl
 {
@@ -27,10 +28,11 @@ namespace UniversalToggl
     {
         public static string AppName = "UniversalToggl";
 
-        public static User user;
-
         public static ApplicationDataContainer localStorage = ApplicationData.Current.LocalSettings;
         public static PasswordVault vault = new PasswordVault();
+
+        public static User user;
+        public static Workspace currentWorkspace;
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -70,8 +72,9 @@ namespace UniversalToggl
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
-            var rootFrame = Window.Current.Content as RootControl;
 
+            var rootFrame = Window.Current.Content as RootControl;
+            
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
             if (rootFrame == null)
@@ -95,25 +98,6 @@ namespace UniversalToggl
                 if (rootFrame.RootFrame.Content == null)
                 {
                     rootFrame.RootFrame.Navigate(typeof(MainPage));
-                    //string username = (string)localStorage.Values["username"];
-                    //if (username == null)
-                    //{
-                    //    //rootFrame.RootFrame.Navigate(typeof(LoginPage));
-                    //}
-                    //else
-                    //{
-                    //    PasswordCredential credential =  vault.Retrieve(AppName, username);
-                    //    rootFrame.RootFrame.Navigate(typeof(LoginPage), credential);
-                    //}
-
-                    //if (username == null)
-                    //{
-                    //}
-                    //else
-                    //{
-                    //    PasswordCredential credential = vault.Retrieve(AppName, username);
-                    //    rootFrame.RootFrame.Navigate(typeof(MainPage), credential);
-                    //}
                 }
                 // Ensure the current window is active
                 Window.Current.Activate();

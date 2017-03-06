@@ -60,12 +60,14 @@
     </UserControl.Resources>
 
     <SplitView x:Name="splitView" IsPaneOpen="False"
-               DisplayMode="CompactOverlay">
+               DisplayMode="CompactOverlay"
+               OpenPaneLength="200"
+               Margin="0,0,0,50">
         <SplitView.Pane>
             <Grid Background="{StaticResource SplitViewBackgroundBrush}">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="auto" 
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*" 
                                    MinHeight="60"/>
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0">
@@ -109,6 +111,7 @@
                     </StackPanel>
 
                 </StackPanel>
+
                 <StackPanel Grid.Row="1" VerticalAlignment="Bottom">
                     <StackPanel x:Name="SettingsButton"
                                 Style="{StaticResource NavbarStackPanelStyle}"

@@ -11,6 +11,11 @@ namespace TogglAPI
         [JsonProperty("id")]
         public int ProjectID { get; set; }
 
+        [JsonProperty("wid")]
+        public int WorkspaceID { get; set; }
+
+        [JsonProperty("color")]
+        public string Color { get; set; }
         #endregion
     }
 }

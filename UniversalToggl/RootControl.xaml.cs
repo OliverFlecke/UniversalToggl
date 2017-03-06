@@ -82,12 +82,12 @@ namespace UniversalToggl
 
         private void WorkspacesButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            //Navigate(typeof(WorkspacePage));
+            Navigate(typeof(WorkspacePage));
         }
 
         private void TagsButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            //Navigate(typeof(TagsPage));
+            Navigate(typeof(TagsPage));
         }
     }
 }
