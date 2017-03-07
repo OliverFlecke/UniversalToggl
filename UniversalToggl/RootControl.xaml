@@ -61,8 +61,7 @@
 
     <SplitView x:Name="splitView" IsPaneOpen="False"
                DisplayMode="CompactOverlay"
-               OpenPaneLength="200"
-               Margin="0,0,0,50">
+               OpenPaneLength="200">
         <SplitView.Pane>
             <Grid Background="{StaticResource SplitViewBackgroundBrush}">
                 <Grid.RowDefinitions>

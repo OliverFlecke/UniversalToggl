@@ -1,23 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
+﻿using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 using Windows.Security.Credentials;
 using TogglAPI;
 
 // The Content Dialog item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace UniversalToggl
+namespace UniversalToggl.Dialogs
 {
     public sealed partial class LoginDialog : ContentDialog
     {
@@ -25,6 +14,7 @@ namespace UniversalToggl
         {
             this.InitializeComponent();
         }
+
         private void Login_button_Click(object sender, ContentDialogButtonClickEventArgs e)
         {
             Login();
@@ -57,6 +47,10 @@ namespace UniversalToggl
             Login(this.Email_box.Text, this.Password_box.Password);
         }
 
+        /// <summary>
+        /// Login with a Password Credential object
+        /// </summary>
+        /// <param name="credentials">The credentials to login</param>
         public void LoginWithCredentials(PasswordCredential credentials)
         {
             Login(credentials.UserName, credentials.Password);

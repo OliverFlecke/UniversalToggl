@@ -1,23 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+﻿using Windows.UI.Xaml.Controls;
 using System.Collections.ObjectModel;
 using TogglAPI;
+using UniversalToggl.View.Model;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace UniversalToggl
+namespace UniversalToggl.View
 {
 
     /// <summary>
@@ -53,31 +41,5 @@ namespace UniversalToggl
             }
         }
 
-    }
-
-    /// <summary>
-    /// Class to represent the view of the projects in each workspace for this page
-    /// </summary>
-    public class WorkspaceViewModel
-    {
-        private Workspace workspace;
-
-        public string Name
-        {
-            get { return workspace.Name; }
-        }
-
-        private ObservableCollection<Project> projects = new ObservableCollection<Project>();
-
-	    public ObservableCollection<Project> Projects
-	    {
-		    get { return projects;}
-		    set { projects = value;}
-	    }
-	
-        public WorkspaceViewModel(Workspace workspace)
-        {
-            this.workspace = workspace;
-        }
     }
 }

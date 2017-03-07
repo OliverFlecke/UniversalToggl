@@ -1,23 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+using TogglAPI;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using TogglAPI;
 using Windows.Security.Credentials;
 using Windows.Storage;
 using Windows.UI.ViewManagement;
+using UniversalToggl.View;
 
 namespace UniversalToggl
 {
@@ -99,9 +90,11 @@ namespace UniversalToggl
                 {
                     rootFrame.RootFrame.Navigate(typeof(MainPage));
                 }
-                // Ensure the current window is active
-                Window.Current.Activate();
             }
+
+            ApplicationView.GetForCurrentView().SetDesiredBoundsMode(ApplicationViewBoundsMode.UseVisible);
+            // Ensure the current window is active
+            Window.Current.Activate();
         }
 
         /// <summary>
