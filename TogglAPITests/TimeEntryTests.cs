@@ -51,6 +51,22 @@ namespace TogglAPITests
         [TestMethod]
         [TestCategory("Web API")]
         [TestCategory("GET")]
+        public void GetRunningTimeEntry_NoEntryRunningTest()
+        {
+            // Make sure that there is no running time entry 
+            TimeEntry.StopTimeEntry(this.entry.Id).Wait();
+
+            // Try to get the running time entry 
+            var task = TimeEntry.GetRunningTimeEntry();
+            task.Wait();
+            TimeEntry entry = task.Result;
+
+            Assert.IsNull(entry);
+        }
+
+        [TestMethod]
+        [TestCategory("Web API")]
+        [TestCategory("GET")]
         public void GetTimeEntryFromIdTest()
         {
             var task = TimeEntry.GetTimeEntry(528755324);

@@ -43,6 +43,7 @@ namespace TogglAPI
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authenticationString);
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Add("Connection", "Close");
             isConnected = true;
         }
 

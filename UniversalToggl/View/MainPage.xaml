@@ -19,11 +19,47 @@
                             FontFamily="{StaticResource PivotTitleFontFamily}" 
                             FontSize="{StaticResource HubHeaderThemeFontSize}"
                             Margin="6,0,0,6"/>
-        
-        <StackPanel Grid.Row="1">
-            <TextBlock Text="Running Entry"/>
-            <TextBlock Text="{x:Bind RunningTimeEntry.Entry.Description, Mode=OneWay}"/>
-        </StackPanel>
+
+        <Grid Grid.Row="1"
+              x:Name="RunningTimeEntryDisplay"
+              Margin="12,0"
+              Background="Green">
+            <StackPanel Margin="6">
+                <TextBlock Text="{x:Bind RunningTimeEntry.Entry.Description, Mode=OneWay}"
+                           FontSize="{StaticResource HubSectionHeaderThemeFontSize}"
+                           HorizontalAlignment="Left"/>
+                <TextBlock x:Name="TimerDisplay"
+                           Text="{x:Bind RunningTimeEntry.Entry.ProjectName, Mode=OneWay}"/>
+            </StackPanel>
+            <Border Background="Green"
+                    HorizontalAlignment="Right"
+                    BorderThickness="0">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock x:Name="TimeDisplay"
+                               Text="{x:Bind RunningTimeEntry.Time}"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center"
+                               FontSize="20"
+                               MaxWidth="100"
+                               Margin="12,0"/>
+                    <Border Background="Red"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Stretch"
+                            BorderThickness="0">
+                        <TextBlock x:Name="StopRunningTimeEntryButton"
+                                   Text="Stop"
+                                   FontSize="18"
+                                   FontWeight="SemiBold"
+                                   CharacterSpacing="50"
+                                   Tapped="StopRunningTimeEntryButton_Tapped"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Margin="12"/>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+        </Grid>
 
         <ListView Grid.Row="2"
                     ItemsSource="{x:Bind TimeEntries, Mode=OneWay}">
@@ -45,13 +81,13 @@
 
 
         <CommandBar Grid.Row="3"
-                        VerticalAlignment="Bottom"
-                        ClosedDisplayMode="Compact">
+                    VerticalAlignment="Bottom"
+                    ClosedDisplayMode="Compact">
             <AppBarButton x:Name="AddButton" 
                           Icon="Add" 
                           Label="Add">
                 <AppBarButton.Flyout>
-                    <Flyout Placement="Top">
+                    <Flyout Placement="Full">
                         <Flyout.FlyoutPresenterStyle>
                             <Style TargetType="FlyoutPresenter">
                                 <Setter Property="Background" Value="Black"/>
@@ -62,31 +98,65 @@
                                 <Setter Property="BorderThickness" Value="2"/>
                             </Style>
                         </Flyout.FlyoutPresenterStyle>
-                        <StackPanel>
-                            <TextBlock Text="Start Time Entry"
-                                       Margin="0,0,0,6"
-                                       FontSize="18"/>
-                            <TextBox x:Name="TimeEntryDescriptionBox"
-                                     Background="Red"
-                                     Header="Description"/>
-                            <TextBox x:Name="TimeEntryProjectBox" 
-                                     Background="Red"
-                                     Header="Project"/>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
                             <StackPanel>
-                                <DatePicker Margin="0,12"/>
-                                <TimePicker/>
+                                <TextBlock Text="Start Time Entry"
+                                           Margin="0,0,0,6"
+                                           FontSize="18"/>
+                                <TextBox x:Name="TimeEntryDescriptionBox"
+                                         Background="Red"
+                                         Header="Description"
+                                         KeyDown="TimeEntryDescriptionBox_KeyDown"/>
+                                <AutoSuggestBox x:Name="TimeEntryProjectBox" 
+                                                Header="Project"
+                                                KeyDown="TimeEntryDescriptionBox_KeyDown"
+                                                TextChanged="TimeEntryProjectBox_TextChanged"
+                                                SuggestionChosen="TimeEntryProjectBox_SuggestionChosen"
+                                                TextMemberPath="Name"
+                                                DisplayMemberPath="Name"
+                                                IsTabStop="False"/>
+
+                                <TextBlock x:Name="ProjectBoxErrorMessage"
+                                           Text="Error message"
+                                           Foreground="Red"
+                                           Margin="0,6,0,0"
+                                           Visibility="Collapsed"/>
+                            
+                                <!--<StackPanel>
+                                    <DatePicker Margin="0,12"/>
+                                    <TimePicker/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <DatePicker Margin="0,12"/>
+                                    <TimePicker/>
+                                </StackPanel>-->
                             </StackPanel>
-                            <StackPanel>
-                                <DatePicker Margin="0,12"/>
-                                <TimePicker/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal"
-                                        Margin="0,12,0,0">
+                            
+                            
+                            <Grid Grid.Row="1" 
+                                  VerticalAlignment="Top"
+                                  Margin="0,12,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
                                 <Button x:Name="StartTimeEntryButton" 
                                         Content="Start"
-                                        Width="128" Click="StartTimeEntryButton_Click"/>
-                            </StackPanel>
-                        </StackPanel>
+                                        HorizontalAlignment="Stretch"
+                                        Margin="12,0"
+                                        Click="StartTimeEntryButton_Click"/>
+                                <Button Grid.Column="1" 
+                                        x:Name="CancelTimeEntryButton"
+                                        Content="Cancel"
+                                        HorizontalAlignment="Stretch"
+                                        Margin="12,0"
+                                        Click="CancelTimeEntryButton_Click"/>
+                            </Grid>
+                        </Grid>
                     </Flyout>
                 </AppBarButton.Flyout>
             </AppBarButton>

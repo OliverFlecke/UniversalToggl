@@ -9,7 +9,7 @@ namespace TogglAPI
         public string Name { get; set; }
 
         [JsonProperty("id")]
-        public int ProjectID { get; set; }
+        public int ID { get; set; }
 
         [JsonProperty("wid")]
         public int WorkspaceID { get; set; }

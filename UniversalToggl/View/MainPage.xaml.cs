@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using System.Collections.ObjectModel;
 using TogglAPI;
 using UniversalToggl.Dialogs;
 using UniversalToggl.View.Model;
+using System.Collections.Generic;
+using Windows.UI.Xaml.Input;
+using Windows.System;
 
 namespace UniversalToggl.View
 {
@@ -14,7 +18,7 @@ namespace UniversalToggl.View
     public sealed partial class MainPage : Page
     {
         #region Properties
-        private TimeEntryViewModel runningTimeEntry = new TimeEntryViewModel();
+        private TimeEntryViewModel runningTimeEntry;
 
         public TimeEntryViewModel RunningTimeEntry
         {
@@ -44,10 +48,13 @@ namespace UniversalToggl.View
         public MainPage()
         {
             this.InitializeComponent();
-            Setup();
+            runningTimeEntry = new TimeEntryViewModel();
+            runningTimeEntry.TimeDisplay = this.TimeDisplay;
+
+            LoginAndUpdateData();
         }
 
-        public async void Setup()
+        public async void LoginAndUpdateData()
         {
             if (App.user == null)
             {
@@ -64,7 +71,21 @@ namespace UniversalToggl.View
                 }
             }
 
+            UpdateRunningTimeEntry();
             UpdateTimeEntries();
+        }
+
+        public async void UpdateRunningTimeEntry()
+        {
+            // Get the running entry
+            var runningEntry = await TimeEntry.GetRunningTimeEntry();
+            if (runningEntry != null)
+            {
+                this.RunningTimeEntry.Entry = runningEntry;
+                this.RunningTimeEntryDisplay.Visibility = Visibility.Visible;
+            }
+            else
+                this.RunningTimeEntryDisplay.Visibility = Visibility.Collapsed;
         }
 
         public async void UpdateTimeEntries()
@@ -91,12 +112,11 @@ namespace UniversalToggl.View
                 // TODO Find a cleaner way to do this
                 foreach (Project project in projects)
                 {
-                    if (project.ProjectID == entry.ProjectId)
+                    if (project.ID == entry.ProjectId)
                         entry.ProjectName = project.Name;
                 }
                 timeEntries.Add(entry);
             }
-            this.RunningTimeEntry.Entry = await TimeEntry.GetRunningTimeEntry();
         }
 
         /// <summary>
@@ -109,18 +129,82 @@ namespace UniversalToggl.View
             string description = this.TimeEntryDescriptionBox.Text;
             string project = this.TimeEntryProjectBox.Text;
 
-            StartTimeEntry(description, project);
+            if (project == string.Empty || projects.First(x => x.Name.ToLower() == project.ToLower()) == null)
+            {
+                this.ProjectBoxErrorMessage.Visibility = Visibility.Collapsed;
+                StartTimeEntry(description, project);
+            }
+            else
+            {
+                this.ProjectBoxErrorMessage.Text = "Invalid project";
+                this.ProjectBoxErrorMessage.Visibility = Visibility.Visible;
+            }
+
         }
 
         /// <summary>
         /// Start a new time entry 
         /// </summary>
         /// <param name="description">The description of the time entry</param>
-        /// <param name="project"></param>
-        private async void StartTimeEntry(string description, string project)
+        /// <param name="projectName"></param>
+        private async void StartTimeEntry(string description, string projectName)
         {
-            TimeEntry entry = await TimeEntry.StartTimeEntry(description);
+            TimeEntry entry;
+            try
+            {
+                Project project = projects.First(x => x.Name == projectName);
+                entry = await TimeEntry.StartTimeEntry(description, project.ID);
+                entry.ProjectName = projectName;
+            } 
+            catch (Exception)
+            {
+                entry = await TimeEntry.StartTimeEntry(description);
+            }
             this.RunningTimeEntry.Entry = entry;
+            this.RunningTimeEntryDisplay.Visibility = Visibility.Visible;
+        }
+
+        private async void StopRunningTimeEntryButton_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+            TimeEntry entry = await TimeEntry.StopTimeEntry(this.RunningTimeEntry.Entry.Id);
+            TimeEntries.Insert(0, entry);
+            RunningTimeEntry.Entry = null;
+            this.RunningTimeEntryDisplay.Visibility = Visibility.Collapsed;
+        }
+
+        /// <summary>
+        /// Update the auto suggest button in the flyout to add a new task
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void TimeEntryProjectBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        {
+            IEnumerable<Project> filtered = projects.Where(x => x.Name.ToLower().StartsWith(sender.Text.ToLower()));
+            if (filtered.Count() == 0)
+            {
+                List<Project> empty = new List<Project>();
+                empty.Add(new Project() { Name = "No results" }); // There must be a better way
+                sender.ItemsSource = empty;
+            }
+            else
+                sender.ItemsSource = filtered;
+        }
+
+        private void TimeEntryProjectBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+        {
+            Project selected = args.SelectedItem as Project;
+            sender.Text = selected.Name;
+        }
+
+        private void TimeEntryDescriptionBox_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == VirtualKey.Enter)
+                StartTimeEntryButton_Click(sender, new RoutedEventArgs());
+        }
+
+        private void CancelTimeEntryButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.AddButton.Flyout.Hide();
         }
     }
 }

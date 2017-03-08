@@ -52,7 +52,7 @@ namespace TogglAPITests
             Assert.AreEqual(2, projects.Count);
             Project first = projects[0];
             Assert.AreEqual("Second project", first.Name);
-            Assert.IsTrue(0 < first.ProjectID);
+            Assert.IsTrue(0 < first.ID);
 
             Project second = projects[1];
             Assert.AreEqual("Toggl Testing", second.Name);

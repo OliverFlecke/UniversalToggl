@@ -109,7 +109,11 @@ namespace TogglAPI
         public static async Task<TimeEntry> GetRunningTimeEntry()
         {
             string json = await Connection.GetAsync("time_entries/current");
-            return CreateTimeEntryFromJson(JObject.Parse(json).SelectToken("data").ToString());
+            JToken data = JObject.Parse(json).SelectToken("data");
+            if (data.HasValues)
+                return CreateTimeEntryFromJson(data.ToString());
+            else
+                return null;
         }
 
         /// <summary>
