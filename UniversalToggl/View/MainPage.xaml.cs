@@ -127,14 +127,20 @@ namespace UniversalToggl.View
         private void StartTimeEntryButton_Click(object sender, RoutedEventArgs e)
         {
             string description = this.TimeEntryDescriptionBox.Text;
-            string project = this.TimeEntryProjectBox.Text;
+            string projectName = this.TimeEntryProjectBox.Text;
 
-            if (project == string.Empty || projects.First(x => x.Name.ToLower() == project.ToLower()) == null)
+            try
             {
+                Project project = projects.First(x => x.Name.ToLower() == projectName.ToLower());
                 this.ProjectBoxErrorMessage.Visibility = Visibility.Collapsed;
-                StartTimeEntry(description, project);
+                StartTimeEntry(description, projectName);
+
+                // Clear the flyout 
+                AddButton.Flyout.Hide();
+                TimeEntryDescriptionBox.Text = string.Empty;
+                TimeEntryProjectBox.Text = string.Empty;
             }
-            else
+            catch (Exception)
             {
                 this.ProjectBoxErrorMessage.Text = "Invalid project";
                 this.ProjectBoxErrorMessage.Visibility = Visibility.Visible;
@@ -188,6 +194,11 @@ namespace UniversalToggl.View
             }
             else
                 sender.ItemsSource = filtered;
+        }
+
+        private void TimeEntryProjectBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            this.TimeEntryProjectBox_TextChanged(sender as AutoSuggestBox, new AutoSuggestBoxTextChangedEventArgs());
         }
 
         private void TimeEntryProjectBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)

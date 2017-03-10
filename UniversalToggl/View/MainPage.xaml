@@ -108,7 +108,6 @@
                                            Margin="0,0,0,6"
                                            FontSize="18"/>
                                 <TextBox x:Name="TimeEntryDescriptionBox"
-                                         Background="Red"
                                          Header="Description"
                                          KeyDown="TimeEntryDescriptionBox_KeyDown"/>
                                 <AutoSuggestBox x:Name="TimeEntryProjectBox" 
@@ -118,7 +117,8 @@
                                                 SuggestionChosen="TimeEntryProjectBox_SuggestionChosen"
                                                 TextMemberPath="Name"
                                                 DisplayMemberPath="Name"
-                                                IsTabStop="False"/>
+                                                IsTabStop="False"
+                                                GotFocus="TimeEntryProjectBox_GotFocus"/>
 
                                 <TextBlock x:Name="ProjectBoxErrorMessage"
                                            Text="Error message"
