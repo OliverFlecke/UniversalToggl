@@ -23,7 +23,9 @@
         <Grid Grid.Row="1"
               x:Name="RunningTimeEntryDisplay"
               Margin="12,0"
-              Background="Green">
+              BorderBrush="Green"
+              BorderThickness="3"
+              Background="Black">
             <StackPanel Margin="6">
                 <TextBlock Text="{x:Bind RunningTimeEntry.Entry.Description, Mode=OneWay}"
                            FontSize="{StaticResource HubSectionHeaderThemeFontSize}"
@@ -31,7 +33,7 @@
                 <TextBlock x:Name="TimerDisplay"
                            Text="{x:Bind RunningTimeEntry.Entry.ProjectName, Mode=OneWay}"/>
             </StackPanel>
-            <Border Background="Green"
+            <Border Background="Black"
                     HorizontalAlignment="Right"
                     BorderThickness="0">
                 <StackPanel Orientation="Horizontal">

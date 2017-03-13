@@ -66,8 +66,15 @@ namespace UniversalToggl.View
                 }
                 else
                 {
-                    var credentials = App.vault.Retrieve(App.AppName, username);
-                    loginDialog.LoginWithCredentials(credentials);
+                    try
+                    {
+                        var credentials = App.vault.Retrieve(App.AppName, username);
+                        loginDialog.LoginWithCredentials(credentials);
+                    }
+                    catch (Exception)
+                    {
+                        await loginDialog.ShowAsync();
+                    }
                 }
             }
 

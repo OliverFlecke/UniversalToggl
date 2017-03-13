@@ -10,6 +10,7 @@ namespace UniversalToggl.View.Model
 {
     public class TimeEntryViewModel : INotifyPropertyChanged
     {
+        private TimeSpan offset;
         private TimeEntry entry;
 
         public TimeEntry Entry
@@ -18,7 +19,8 @@ namespace UniversalToggl.View.Model
             set
             {
                 entry = value;
-                TimerSetup();
+                if (value != null)
+                    TimerSetup();
                 this.OnPropertyChaged();
             }
         }
@@ -36,15 +38,20 @@ namespace UniversalToggl.View.Model
                     return string.Empty;
                 else
                 {
-                    return timer.Elapsed.ToString("hh\\:mm\\:ss");
+                    var span = timer.Elapsed + offset;
+                    return string.Format("{0:00}:{1:00}:{2:00}", span.Days * 24 + span.Hours, span.Minutes, span.Seconds);
                 }
             }
         }
 
         public TextBlock TimeDisplay { get; internal set; }
 
+        /// <summary>
+        /// Setup the timer
+        /// </summary>
         private void TimerSetup()
         {
+            offset = new TimeSpan(DateTime.Now.ToUniversalTime().Ticks - entry.Start.ToUniversalTime().Ticks);
             timer = new Stopwatch();
             timer.Start();
 
