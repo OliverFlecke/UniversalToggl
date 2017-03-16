@@ -138,7 +138,9 @@ namespace UniversalToggl.View
 
             try
             {
-                Project project = projects.First(x => x.Name.ToLower() == projectName.ToLower());
+                // If project name is non-empty, the project must already exists
+                if (projectName != string.Empty)
+                    projects.First(x => x.Name.ToLower() == projectName.ToLower());
                 this.ProjectBoxErrorMessage.Visibility = Visibility.Collapsed;
                 StartTimeEntry(description, projectName);
 
@@ -175,6 +177,11 @@ namespace UniversalToggl.View
             }
             this.RunningTimeEntry.Entry = entry;
             this.RunningTimeEntryDisplay.Visibility = Visibility.Visible;
+        }
+
+        private void StartTimeEntry(TimeEntry entry)
+        {
+            this.StartTimeEntry(entry.Description, entry.ProjectName);
         }
 
         private async void StopRunningTimeEntryButton_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
@@ -224,5 +231,35 @@ namespace UniversalToggl.View
         {
             this.AddButton.Flyout.Hide();
         }
+
+
+        /// <summary>
+        /// Event handler for the description autosuggestion box for adding new entries
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void TimeEntryDescriptionBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        {
+            sender.ItemsSource = timeEntries.Where(x => x.Description.ToLower().StartsWith(sender.Text.ToLower()));
+        }
+
+        private void TimeEntryDescriptionBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+        {
+            var seleted = args.SelectedItem as TimeEntry;
+            sender.Text = seleted.Description;
+        }
+
+        /// <summary>
+        /// Event listener for the play button on each of the time entry items in the main view.
+        /// </summary>
+        /// <param name="sender">The icon which has been pressed, along with the seleted item</param>
+        /// <param name="e"></param>
+        private void PlayButton_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            var entry = (e.OriginalSource as TextBlock).DataContext as TimeEntry;
+
+            this.StartTimeEntry(entry);
+        }
+
     }
 }

@@ -50,12 +50,14 @@ namespace TogglAPI
 
         public TimeEntry()
         {
-
+            // To avoid cases where there is no destription
+            Description = string.Empty;
         }
 
         public TimeEntry(string description)
         {
-            this.Description = description;
+            if (description == null) this.Description = string.Empty;
+            else this.Description = description;
         }
 
         /// <summary>

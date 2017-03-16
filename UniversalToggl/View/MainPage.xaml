@@ -22,20 +22,23 @@
 
         <Grid Grid.Row="1"
               x:Name="RunningTimeEntryDisplay"
-              Margin="12,0"
-              BorderBrush="Green"
-              BorderThickness="3"
-              Background="Black">
-            <StackPanel Margin="6">
+              Margin="0"
+              BorderThickness="0"
+              Background="Gray"
+              Visibility="Visible">
+            <StackPanel Margin="6"
+                        Background="Gray">
                 <TextBlock Text="{x:Bind RunningTimeEntry.Entry.Description, Mode=OneWay}"
                            FontSize="{StaticResource HubSectionHeaderThemeFontSize}"
                            HorizontalAlignment="Left"/>
                 <TextBlock x:Name="TimerDisplay"
                            Text="{x:Bind RunningTimeEntry.Entry.ProjectName, Mode=OneWay}"/>
             </StackPanel>
-            <Border Background="Black"
-                    HorizontalAlignment="Right"
+            <Border HorizontalAlignment="Right"
                     BorderThickness="0">
+                <Border.Background>
+                    <SolidColorBrush Color="Gray" Opacity="0.5"/>
+                </Border.Background>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock x:Name="TimeDisplay"
                                Text="{x:Bind RunningTimeEntry.Time}"
@@ -67,9 +70,14 @@
                     ItemsSource="{x:Bind TimeEntries, Mode=OneWay}">
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="TogglAPI:TimeEntry">
-                    <StackPanel Orientation="Horizontal">
-                        <SymbolIcon Symbol="Play" Margin="0,12,12,12"/>
-                        <StackPanel>
+                    <StackPanel Orientation="Horizontal"
+                                Margin="6,0">
+                        <Grid x:Name="PlayButton"
+                              Tapped="PlayButton_Tapped">
+                            <Ellipse Fill="Green" Width="36" Height="36"/>
+                            <SymbolIcon Symbol="Play" />
+                        </Grid>
+                        <StackPanel Margin="12,0">
                             <TextBlock Text="{x:Bind Description}"
                                                 Style="{ThemeResource SubtitleTextBlockStyle}"/>
                             <TextBlock Text="{x:Bind ProjectName}"
@@ -109,8 +117,12 @@
                                 <TextBlock Text="Start Time Entry"
                                            Margin="0,0,0,6"
                                            FontSize="18"/>
-                                <TextBox x:Name="TimeEntryDescriptionBox"
+                                <AutoSuggestBox x:Name="TimeEntryDescriptionBox"
                                          Header="Description"
+                                         TextChanged="TimeEntryDescriptionBox_TextChanged"
+                                         SuggestionChosen="TimeEntryDescriptionBox_SuggestionChosen"
+                                         TextMemberPath="Description"
+                                         DisplayMemberPath="Description"
                                          KeyDown="TimeEntryDescriptionBox_KeyDown"/>
                                 <AutoSuggestBox x:Name="TimeEntryProjectBox" 
                                                 Header="Project"
