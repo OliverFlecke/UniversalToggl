@@ -18,7 +18,7 @@ namespace UniversalToggl.View
     public sealed partial class MainPage : Page
     {
         #region Properties
-        private TimeEntryViewModel runningTimeEntry;
+        private static TimeEntryViewModel runningTimeEntry;
 
         public TimeEntryViewModel RunningTimeEntry
         {
@@ -26,18 +26,17 @@ namespace UniversalToggl.View
             set { runningTimeEntry = value; }
         }
 
-
-        private static ObservableCollection<TimeEntry> timeEntries;
+        private static ObservableCollection<TimeEntry> timeEntries = new ObservableCollection<TimeEntry>();
         public ObservableCollection<TimeEntry> TimeEntries { get { return timeEntries; } }
 
-        private static ObservableCollection<Workspace> workspaces;
+        private static ObservableCollection<Workspace> workspaces = new ObservableCollection<Workspace>();
         public ObservableCollection<Workspace> Workspaces
         {
             get { return workspaces; }
             set { workspaces = value; }
         }
 
-        private static ObservableCollection<Project> projects;
+        private static ObservableCollection<Project> projects = new ObservableCollection<Project>();
         public ObservableCollection<Project> Projects
         {
             get { return projects; }
@@ -54,6 +53,9 @@ namespace UniversalToggl.View
             LoginAndUpdateData();
         }
 
+        /// <summary>
+        /// Make sure the loggin is valid, and update the data if needed
+        /// </summary>
         public async void LoginAndUpdateData()
         {
             if (App.user == null)
@@ -79,9 +81,13 @@ namespace UniversalToggl.View
             }
 
             UpdateRunningTimeEntry();
-            UpdateTimeEntries();
+            if (!timeEntries.Any())
+                Synchronice();
         }
 
+        /// <summary>
+        /// Update the running time entry 
+        /// </summary>
         public async void UpdateRunningTimeEntry()
         {
             // Get the running entry
@@ -95,25 +101,28 @@ namespace UniversalToggl.View
                 this.RunningTimeEntryDisplay.Visibility = Visibility.Collapsed;
         }
 
-        public async void UpdateTimeEntries()
+        /// <summary>
+        /// Synchronice with the Toggl server
+        /// 
+        /// Note: at the moment, only data is recived from the server, as there is no offline tracking
+        /// </summary>
+        public static async void Synchronice()
         {
-            // Rest the list of content
-            workspaces = new ObservableCollection<Workspace>();
-            projects = new ObservableCollection<Project>();
-            timeEntries = new ObservableCollection<TimeEntry>();
-
+            // Reset the list of content
+            workspaces.Clear();
+            projects.Clear();
+            timeEntries.Clear();
+            
             var spaces = await Workspace.GetWorkspaces();
             foreach (Workspace workspace in spaces)
             {
                 workspaces.Add(workspace);
-
                 var ps = await Workspace.GetWorkspaceProjects(workspace.Id);
                 foreach (Project project in ps)
                     projects.Add(project);
             }
 
             var entries = await TimeEntry.GetTimeEntriesInRange();
-
             // If there is a running entry, make sure it does not show up in the list of time entries
             if (runningTimeEntry.Entry != null)
             {
@@ -164,7 +173,6 @@ namespace UniversalToggl.View
                 this.ProjectBoxErrorMessage.Text = "Invalid project";
                 this.ProjectBoxErrorMessage.Visibility = Visibility.Visible;
             }
-
         }
 
         /// <summary>
@@ -189,11 +197,20 @@ namespace UniversalToggl.View
             this.RunningTimeEntryDisplay.Visibility = Visibility.Visible;
         }
 
+        /// <summary>
+        /// Start a time entry with the same project and description as the argument
+        /// </summary>
+        /// <param name="entry">Entry to start a copy of</param>
         private void StartTimeEntry(TimeEntry entry)
         {
             this.StartTimeEntry(entry.Description, entry.ProjectName);
         }
 
+        /// <summary>
+        /// Event handler for the stop button. Stops the running time entry and addes it to the list of entries.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void StopRunningTimeEntryButton_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
             TimeEntry entry = await TimeEntry.StopTimeEntry(this.RunningTimeEntry.Entry.Id);
@@ -229,6 +246,11 @@ namespace UniversalToggl.View
                 sender.ItemsSource = filtered;
         }
 
+        /// <summary>
+        /// Makes the suggestion box pop up when the project box gets in focus.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TimeEntryProjectBox_GotFocus(object sender, RoutedEventArgs e)
         {
             this.TimeEntryProjectBox_TextChanged(sender as AutoSuggestBox, new AutoSuggestBoxTextChangedEventArgs());
@@ -275,10 +297,7 @@ namespace UniversalToggl.View
         /// <param name="e"></param>
         private void PlayButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            var entry = (e.OriginalSource as TextBlock).DataContext as TimeEntry;
-
-            this.StartTimeEntry(entry);
+            this.StartTimeEntry((e.OriginalSource as TextBlock).DataContext as TimeEntry);
         }
-
     }
 }

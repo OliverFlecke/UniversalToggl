@@ -80,5 +80,15 @@ namespace UniversalToggl
         {
             Navigate(typeof(TagsPage));
         }
+
+        /// <summary>
+        /// Synchronice with the newest data from the server
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SyncButton_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            MainPage.Synchronice();
+        }
     }
 }

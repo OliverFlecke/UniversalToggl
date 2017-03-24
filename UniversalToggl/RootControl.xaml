@@ -113,6 +113,15 @@
                 </StackPanel>
 
                 <StackPanel Grid.Row="1" VerticalAlignment="Bottom">
+                    <StackPanel x:Name="SyncButton"
+                                Style="{StaticResource NavbarStackPanelStyle}"
+                                Tapped="SyncButton_Tapped">
+                        <AppBarButton Style="{StaticResource NavbarButtonStyle}"
+                                      Icon="Sync"/>
+                        <TextBlock Style="{StaticResource NavbarLabelStyle}" 
+                                   Text="Sync"/>
+                    </StackPanel>
+                    
                     <StackPanel x:Name="SettingsButton"
                                 Style="{StaticResource NavbarStackPanelStyle}"
                                 Tapped="SettingsButton_Tapped">
