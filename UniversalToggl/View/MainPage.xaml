@@ -15,17 +15,18 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="Universal Toggl" 
-                            FontFamily="{StaticResource PivotTitleFontFamily}" 
-                            FontSize="{StaticResource HubHeaderThemeFontSize}"
-                            Margin="6,0,0,6"/>
+
+        <TextBlock Text="Universal Toggl"
+                   FontFamily="{StaticResource PivotTitleFontFamily}" 
+                   FontSize="{StaticResource HubHeaderThemeFontSize}"
+                   Margin="6,0,0,6"/>
 
         <Grid Grid.Row="1"
               x:Name="RunningTimeEntryDisplay"
               Margin="0"
               BorderThickness="0"
               Background="Gray"
-              Visibility="Visible">
+              Visibility="Collapsed">
             <StackPanel Margin="6"
                         Background="Gray">
                 <TextBlock Text="{x:Bind RunningTimeEntry.Entry.Description, Mode=OneWay}"
@@ -48,7 +49,6 @@
                                MaxWidth="100"
                                Margin="12,0"/>
                     <Border Background="Red"
-                            HorizontalAlignment="Right"
                             VerticalAlignment="Stretch"
                             BorderThickness="0">
                         <TextBlock x:Name="StopRunningTimeEntryButton"
@@ -63,27 +63,38 @@
                     </Border>
                 </StackPanel>
             </Border>
-
         </Grid>
 
         <ListView Grid.Row="2"
-                    ItemsSource="{x:Bind TimeEntries, Mode=OneWay}">
+                  ItemsSource="{x:Bind TimeEntries, Mode=OneWay}"
+                  VerticalAlignment="Stretch"
+                  HorizontalContentAlignment="Stretch">
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="TogglAPI:TimeEntry">
-                    <StackPanel Orientation="Horizontal"
-                                Margin="6,0">
-                        <Grid x:Name="PlayButton"
-                              Tapped="PlayButton_Tapped">
-                            <Ellipse Fill="Green" Width="36" Height="36"/>
-                            <SymbolIcon Symbol="Play" />
-                        </Grid>
-                        <StackPanel Margin="12,0">
-                            <TextBlock Text="{x:Bind Description}"
-                                                Style="{ThemeResource SubtitleTextBlockStyle}"/>
-                            <TextBlock Text="{x:Bind ProjectName}"
-                                                Style="{ThemeResource BodyTextBlockStyle}"/>
-                        </StackPanel>
-                    </StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                            <Grid x:Name="PlayButton"
+                                  Tapped="PlayButton_Tapped">
+                                <Ellipse Fill="Green" Width="36" Height="36"/>
+                                <SymbolIcon Symbol="Play" />
+                            </Grid>
+                            <StackPanel Grid.Column="1" 
+                                        Margin="12,0">
+                                <TextBlock Text="{x:Bind Description}"
+                                                    Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                                <TextBlock Text="{x:Bind ProjectName}"
+                                                    Style="{ThemeResource BodyTextBlockStyle}"/>
+                            </StackPanel>
+                            
+                        <Border Grid.Column="2" HorizontalAlignment="Right"
+                                VerticalAlignment="Center">
+                            <TextBlock Text="{x:Bind Duration}"/>
+                        </Border>
+                    </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

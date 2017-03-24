@@ -187,9 +187,18 @@ namespace UniversalToggl.View
         private async void StopRunningTimeEntryButton_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
             TimeEntry entry = await TimeEntry.StopTimeEntry(this.RunningTimeEntry.Entry.Id);
+            try
+            {
+                Project project = projects.First<Project>(x => x.ID == entry.ProjectId);
+                entry.ProjectName = project.Name;
+            }
+            catch (Exception) { }
+            
             TimeEntries.Insert(0, entry);
-            RunningTimeEntry.Entry = null;
+
+            // Hid the running entry panel
             this.RunningTimeEntryDisplay.Visibility = Visibility.Collapsed;
+            RunningTimeEntry.Entry = null;
         }
 
         /// <summary>
@@ -240,7 +249,7 @@ namespace UniversalToggl.View
         /// <param name="args"></param>
         private void TimeEntryDescriptionBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
-            sender.ItemsSource = timeEntries.Where(x => x.Description.ToLower().StartsWith(sender.Text.ToLower()));
+            sender.ItemsSource = timeEntries.Where(x => x.Description.ToLower().StartsWith(sender.Text.ToLower())).Distinct(new DescriptionComparer());
         }
 
         private void TimeEntryDescriptionBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)

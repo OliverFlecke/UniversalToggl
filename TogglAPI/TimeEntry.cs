@@ -265,4 +265,20 @@ namespace TogglAPI
         }
         #endregion
     }
+
+    /// <summary>
+    /// Comparer to compare time entries, which are equal if there discription is equal.
+    /// </summary>
+    public class DescriptionComparer : IEqualityComparer<TimeEntry>
+    {
+        public bool Equals(TimeEntry x, TimeEntry y)
+        {
+            return x.Description.Equals(y.Description);
+        }
+
+        public int GetHashCode(TimeEntry obj)
+        {
+            return obj.Description.GetHashCode();
+        }
+    }
 }
