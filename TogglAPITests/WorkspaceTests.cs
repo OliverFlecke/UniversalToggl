@@ -57,5 +57,32 @@ namespace TogglAPITests
             Project second = projects[1];
             Assert.AreEqual("Toggl Testing", second.Name);
         }
+
+        [TestMethod]
+        [TestCategory("Web API")]
+        [TestCategory("GET")]
+        public void GetWorkspaceTagsTest()
+        {
+            var task = Workspace.GetWorkspaceTags(workspaceId);
+            task.Wait();
+            List<Tag> tags = task.Result;
+            Assert.AreEqual(5, tags.Count);
+
+            Tag first = tags.ToArray()[0];
+            Assert.AreEqual("Second", first.Name);
+        }
+
+        [TestMethod]
+        [TestCategory("Web API")]
+        [TestCategory("GET")]
+        public void GetWorkspaceTagsWithNoTagsTest()
+        {
+            var task = Workspace.GetWorkspaceTags(1888354);
+            task.Wait();
+            var tags = task.Result;
+
+            Assert.IsNotNull(tags);
+            Assert.AreEqual(0, tags.Count);
+        }
     }
 }

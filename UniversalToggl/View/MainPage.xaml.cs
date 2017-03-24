@@ -6,9 +6,9 @@ using System.Collections.ObjectModel;
 using TogglAPI;
 using UniversalToggl.Dialogs;
 using UniversalToggl.View.Model;
-using System.Collections.Generic;
 using Windows.UI.Xaml.Input;
 using Windows.System;
+using System.Collections.Generic;
 
 namespace UniversalToggl.View
 {
@@ -116,18 +116,18 @@ namespace UniversalToggl.View
         /// </summary>
         /// <param name="description">The description of the time entry</param>
         /// <param name="projectName"></param>
-        private async void StartTimeEntry(string description, string projectName)
+        private async void StartTimeEntry(string description, string projectName, List<Tag> tags = default(List<Tag>))
         {
             TimeEntry entry;
             try
             {
                 Project project = Projects.First(x => x.Name == projectName);
-                entry = await TimeEntry.StartTimeEntry(description, project.ID);
+                entry = await TimeEntry.StartTimeEntry(description, project.ID, tags.ToArray());
                 entry.ProjectName = projectName;
             } 
             catch (Exception)
             {
-                entry = await TimeEntry.StartTimeEntry(description);
+                entry = await TimeEntry.StartTimeEntry(description, tags: tags.ToArray());
             }
             this.RunningTimeEntry.Entry = entry;
             this.RunningTimeEntryDisplay.Visibility = Visibility.Visible;
@@ -139,7 +139,13 @@ namespace UniversalToggl.View
         /// <param name="entry">Entry to start a copy of</param>
         private void StartTimeEntry(TimeEntry entry)
         {
-            this.StartTimeEntry(entry.Description, entry.ProjectName);
+            if (entry.Tags == null)
+                StartTimeEntry(entry.Description, entry.ProjectName);
+            else
+            {
+                var tags = entry.Tags.Select(x => new Tag(x)).ToList();
+                this.StartTimeEntry(entry.Description, entry.ProjectName, tags);
+            }
         }
 
         /// <summary>
@@ -225,7 +231,12 @@ namespace UniversalToggl.View
         /// <param name="e"></param>
         private void PlayButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            this.StartTimeEntry((e.OriginalSource as TextBlock).DataContext as TimeEntry);
+            StartTimeEntry((sender as Grid).DataContext as TimeEntry);
+        }
+
+        private void TimeEntryContent_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            // Navigate to some site to update the time entry
         }
     }
 }

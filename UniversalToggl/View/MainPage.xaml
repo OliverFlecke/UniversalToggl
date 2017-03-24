@@ -77,18 +77,31 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                            <Grid x:Name="PlayButton"
-                                  Tapped="PlayButton_Tapped">
-                                <Ellipse Fill="Green" Width="36" Height="36"/>
-                                <SymbolIcon Symbol="Play" />
-                            </Grid>
-                            <StackPanel Grid.Column="1" 
-                                        Margin="12,0">
-                                <TextBlock Text="{x:Bind Description}"
-                                                    Style="{ThemeResource SubtitleTextBlockStyle}"/>
-                                <TextBlock Text="{x:Bind ProjectName}"
-                                                    Style="{ThemeResource BodyTextBlockStyle}"/>
-                            </StackPanel>
+                        <Grid x:Name="PlayButton"
+                                Tapped="PlayButton_Tapped">
+                            <Ellipse Fill="Green" Width="36" Height="36"/>
+                            <SymbolIcon Symbol="Play" />
+                        </Grid>
+                        <StackPanel Grid.Column="1" 
+                                    x:Name="TimeEntryContent"
+                                    Margin="12,0"
+                                    Tapped="TimeEntryContent_Tapped">
+                            <TextBlock Text="{x:Bind Description}"
+                                                Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                            <TextBlock Text="{x:Bind ProjectName}"
+                                                Style="{ThemeResource BodyTextBlockStyle}"/>
+                        </StackPanel>
+                        <Grid Grid.Column="1"
+                              HorizontalAlignment="Right"
+                              VerticalAlignment="Center"
+                              Margin="12,0">
+                            <Ellipse Fill="Gray" Width="36" Height="36"
+                                     VerticalAlignment="Center"
+                                     HorizontalAlignment="Center"/>
+                            <TextBlock Text="{x:Bind Tags.Count}"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"/>
+                        </Grid>    
                             
                         <Border Grid.Column="2" HorizontalAlignment="Right"
                                 VerticalAlignment="Center">

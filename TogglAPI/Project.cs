@@ -8,7 +8,7 @@ namespace TogglAPI
     {
         #region Properties
         [JsonProperty("name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [JsonProperty("id")]
         public int ID { get; set; }

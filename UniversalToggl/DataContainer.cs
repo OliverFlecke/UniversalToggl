@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.ObjectModel;
 using TogglAPI;
 using UniversalToggl.View.Model;
@@ -19,6 +20,10 @@ namespace UniversalToggl
         private ObservableCollection<Project> projects = new ObservableCollection<Project>();
         public ObservableCollection<Project> Projects { get { return projects; } }
 
+        private ObservableCollection<Tag> tags = new ObservableCollection<Tag>();
+        public ObservableCollection<Tag> Tags { get { return tags; } }
+
+
         /// <summary>
         /// Synchronice with the Toggl server
         /// 
@@ -35,9 +40,13 @@ namespace UniversalToggl
             foreach (Workspace workspace in spaces)
             {
                 workspaces.Add(workspace);
-                var ps = await Workspace.GetWorkspaceProjects(workspace.Id);
-                foreach (Project project in ps)
-                    projects.Add(project);
+                var projects = await Workspace.GetWorkspaceProjects(workspace.Id);
+                foreach (Project project in projects)
+                    Projects.Add(project);
+
+                var tags = await Workspace.GetWorkspaceTags(workspace.Id);
+                foreach (Tag tag in tags)
+                    Tags.Add(tag);
             }
 
             var entries = await TimeEntry.GetTimeEntriesInRange();
@@ -52,14 +61,14 @@ namespace UniversalToggl
                 catch (Exception) { }
             }
             entries.Reverse();
+
             foreach (TimeEntry entry in entries)
             {
-                // TODO Find a cleaner way to do this
-                foreach (Project project in projects)
+                try
                 {
-                    if (project.ID == entry.ProjectId)
-                        entry.ProjectName = project.Name;
-                }
+                    Project project = Projects.First(p => p.ID == entry.ProjectId);
+                    entry.ProjectName = project.Name;
+                } catch(Exception) { }
                 timeEntries.Add(entry);
             }
         }

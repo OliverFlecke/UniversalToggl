@@ -82,19 +82,8 @@ namespace TogglAPI
         private static TimeEntry CreateTimeEntryFromJson(string json)
         {
             JObject data = JObject.Parse(json);
-            //JToken tagToken = data.SelectToken("tags");
-            //if (tagToken != null) data.Remove("tags");
 
             TimeEntry entry = JsonConvert.DeserializeObject<TimeEntry>(data.ToString());
-
-            // Convert the list of names into tag objects - These objects will not have correct id or workspace id
-            //if (tagToken != null)
-            //{
-            //    List<string> tagNames = JsonConvert.DeserializeObject<List<string>>(tagToken.ToString());
-            //    entry.Tags = new List<Tag>(tagNames.Count);
-            //    foreach (string name in tagNames)
-            //        entry.Tags.Add(new Tag(name));
-            //}
             return entry;
         }
 
@@ -250,9 +239,6 @@ namespace TogglAPI
 
             // The response need to be split into lists
             List<TimeEntry> entries = JsonConvert.DeserializeObject<List<TimeEntry>>(response);
-            //List<TimeEntry> entries = new List<TimeEntry>(entriesData.Count);
-            //foreach (string data in entriesData)
-            //    entries.Add(CreateTimeEntryFromJson(data));
 
             return entries;
         }
