@@ -113,6 +113,16 @@ namespace UniversalToggl.View
             }
 
             var entries = await TimeEntry.GetTimeEntriesInRange();
+
+            // If there is a running entry, make sure it does not show up in the list of time entries
+            if (runningTimeEntry.Entry != null)
+            {
+                try
+                {
+                    var entry = entries.Find(x => x.Id == runningTimeEntry.Entry.Id);
+                    entries.Remove(entry);
+                } catch (Exception) { }
+            }
             entries.Reverse();
             foreach (TimeEntry entry in entries)
             {

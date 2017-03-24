@@ -38,7 +38,7 @@
             <Border HorizontalAlignment="Right"
                     BorderThickness="0">
                 <Border.Background>
-                    <SolidColorBrush Color="Gray" Opacity="0.5"/>
+                    <SolidColorBrush Color="Gray" Opacity="0.75"/>
                 </Border.Background>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock x:Name="TimeDisplay"
@@ -92,11 +92,16 @@
                             
                         <Border Grid.Column="2" HorizontalAlignment="Right"
                                 VerticalAlignment="Center">
-                            <TextBlock Text="{x:Bind Duration}"/>
+                            <TextBlock Text="{x:Bind DurationAsString}"/>
                         </Border>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                </Style>
+            </ListView.ItemContainerStyle>
         </ListView>
 
 
