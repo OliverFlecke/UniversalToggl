@@ -18,37 +18,17 @@ namespace UniversalToggl.View
     public sealed partial class MainPage : Page
     {
         #region Properties
-        private static TimeEntryViewModel runningTimeEntry;
+        public TimeEntryViewModel RunningTimeEntry { get { return App.data.RunningTimeEntry; } }
 
-        public TimeEntryViewModel RunningTimeEntry
-        {
-            get { return runningTimeEntry; }
-            set { runningTimeEntry = value; }
-        }
-
-        private static ObservableCollection<TimeEntry> timeEntries = new ObservableCollection<TimeEntry>();
-        public ObservableCollection<TimeEntry> TimeEntries { get { return timeEntries; } }
-
-        private static ObservableCollection<Workspace> workspaces = new ObservableCollection<Workspace>();
-        public ObservableCollection<Workspace> Workspaces
-        {
-            get { return workspaces; }
-            set { workspaces = value; }
-        }
-
-        private static ObservableCollection<Project> projects = new ObservableCollection<Project>();
-        public ObservableCollection<Project> Projects
-        {
-            get { return projects; }
-            set { projects = value; }
-        }
+        public ObservableCollection<TimeEntry> TimeEntries { get { return App.data.TimeEntries; } }
+        public ObservableCollection<Workspace> Workspaces { get { return App.data.Workspaces; } }
+        public ObservableCollection<Project> Projects { get { return App.data.Projects; } }
         #endregion
 
         public MainPage()
         {
             this.InitializeComponent();
-            runningTimeEntry = new TimeEntryViewModel();
-            runningTimeEntry.TimeDisplay = this.TimeDisplay;
+            RunningTimeEntry.TimeDisplay = this.TimeDisplay;
 
             LoginAndUpdateData();
         }
@@ -81,8 +61,8 @@ namespace UniversalToggl.View
             }
 
             UpdateRunningTimeEntry();
-            if (!timeEntries.Any())
-                Synchronice();
+            if (!TimeEntries.Any())
+                App.data.Synchronice();
         }
 
         /// <summary>
@@ -102,50 +82,6 @@ namespace UniversalToggl.View
         }
 
         /// <summary>
-        /// Synchronice with the Toggl server
-        /// 
-        /// Note: at the moment, only data is recived from the server, as there is no offline tracking
-        /// </summary>
-        public static async void Synchronice()
-        {
-            // Reset the list of content
-            workspaces.Clear();
-            projects.Clear();
-            timeEntries.Clear();
-            
-            var spaces = await Workspace.GetWorkspaces();
-            foreach (Workspace workspace in spaces)
-            {
-                workspaces.Add(workspace);
-                var ps = await Workspace.GetWorkspaceProjects(workspace.Id);
-                foreach (Project project in ps)
-                    projects.Add(project);
-            }
-
-            var entries = await TimeEntry.GetTimeEntriesInRange();
-            // If there is a running entry, make sure it does not show up in the list of time entries
-            if (runningTimeEntry.Entry != null)
-            {
-                try
-                {
-                    var entry = entries.Find(x => x.Id == runningTimeEntry.Entry.Id);
-                    entries.Remove(entry);
-                } catch (Exception) { }
-            }
-            entries.Reverse();
-            foreach (TimeEntry entry in entries)
-            {
-                // TODO Find a cleaner way to do this
-                foreach (Project project in projects)
-                {
-                    if (project.ID == entry.ProjectId)
-                        entry.ProjectName = project.Name;
-                }
-                timeEntries.Add(entry);
-            }
-        }
-
-        /// <summary>
         /// Start the time entry entered into the flyout
         /// </summary>
         /// <param name="sender"></param>
@@ -159,7 +95,7 @@ namespace UniversalToggl.View
             {
                 // If project name is non-empty, the project must already exists
                 if (projectName != string.Empty)
-                    projects.First(x => x.Name.ToLower() == projectName.ToLower());
+                    Projects.First(x => x.Name.ToLower() == projectName.ToLower());
                 this.ProjectBoxErrorMessage.Visibility = Visibility.Collapsed;
                 StartTimeEntry(description, projectName);
 
@@ -185,7 +121,7 @@ namespace UniversalToggl.View
             TimeEntry entry;
             try
             {
-                Project project = projects.First(x => x.Name == projectName);
+                Project project = Projects.First(x => x.Name == projectName);
                 entry = await TimeEntry.StartTimeEntry(description, project.ID);
                 entry.ProjectName = projectName;
             } 
@@ -216,7 +152,7 @@ namespace UniversalToggl.View
             TimeEntry entry = await TimeEntry.StopTimeEntry(this.RunningTimeEntry.Entry.Id);
             try
             {
-                Project project = projects.First<Project>(x => x.ID == entry.ProjectId);
+                Project project = Projects.First<Project>(x => x.ID == entry.ProjectId);
                 entry.ProjectName = project.Name;
             }
             catch (Exception) { }
@@ -231,19 +167,11 @@ namespace UniversalToggl.View
         /// <summary>
         /// Update the auto suggest button in the flyout to add a new task
         /// </summary>
-        /// <param name="sender"></param>
+        /// <param name="projectNameBox"></param>
         /// <param name="args"></param>
-        private void TimeEntryProjectBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        private void TimeEntryProjectBox_TextChanged(AutoSuggestBox projectNameBox, AutoSuggestBoxTextChangedEventArgs args)
         {
-            IEnumerable<Project> filtered = projects.Where(x => x.Name.ToLower().StartsWith(sender.Text.ToLower()));
-            if (filtered.Count() == 0)
-            {
-                List<Project> empty = new List<Project>();
-                empty.Add(new Project() { Name = "No results" }); // There must be a better way
-                sender.ItemsSource = empty;
-            }
-            else
-                sender.ItemsSource = filtered;
+            projectNameBox.ItemsSource = Projects.Where(x => x.Name.ToLower().StartsWith(projectNameBox.Text.ToLower())).Distinct(new ProjectNameComparer()).DefaultIfEmpty(new Project() { Name = "No results" });
         }
 
         /// <summary>
@@ -281,7 +209,7 @@ namespace UniversalToggl.View
         /// <param name="args"></param>
         private void TimeEntryDescriptionBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
-            sender.ItemsSource = timeEntries.Where(x => x.Description.ToLower().StartsWith(sender.Text.ToLower())).Distinct(new DescriptionComparer());
+            sender.ItemsSource = TimeEntries.Where(x => x.Description.ToLower().StartsWith(sender.Text.ToLower())).Distinct(new DescriptionComparer());
         }
 
         private void TimeEntryDescriptionBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)

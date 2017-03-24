@@ -88,7 +88,7 @@ namespace UniversalToggl
         /// <param name="e"></param>
         private void SyncButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            MainPage.Synchronice();
+            App.data.Synchronice();
         }
     }
 }

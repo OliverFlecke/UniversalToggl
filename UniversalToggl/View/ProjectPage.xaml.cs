@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using TogglAPI;
 using UniversalToggl.View.Model;
+using System.Linq;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -9,17 +10,13 @@ namespace UniversalToggl.View
 {
 
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// Page that displays all the project a user have, grouped by workspace.
     /// </summary>
     public sealed partial class ProjectPage : Page
     {
         private ObservableCollection<WorkspaceViewModel> viewModel = new ObservableCollection<WorkspaceViewModel>();
 
-        public ObservableCollection<WorkspaceViewModel> ViewModel
-        {
-            get { return viewModel; }
-            set { viewModel = value; }
-        }
+        public ObservableCollection<WorkspaceViewModel> ViewModel { get { return viewModel; } }
 
         public ProjectPage()
         {
@@ -28,12 +25,12 @@ namespace UniversalToggl.View
             Setup();
         }
 
-        private async void Setup()
+        private void Setup()
         {
-            foreach (Workspace workspace in App.user.Workspaces)
+            foreach (Workspace workspace in App.data.Workspaces)
             {
                 WorkspaceViewModel model = new WorkspaceViewModel(workspace);
-                foreach (Project project in await Workspace.GetWorkspaceProjects(workspace.Id))
+                foreach (Project project in App.data.Projects.Where(x => x.WorkspaceID == workspace.Id))
                 {
                     model.Projects.Add(project);
                 }

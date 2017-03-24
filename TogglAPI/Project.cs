@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
+using System;
 
 namespace TogglAPI
 {
@@ -17,5 +19,18 @@ namespace TogglAPI
         [JsonProperty("color")]
         public string Color { get; set; }
         #endregion
+    }
+
+    public class ProjectNameComparer : IEqualityComparer<Project>
+    {
+        public bool Equals(Project x, Project y)
+        {
+            return x.Name == y.Name;
+        }
+
+        public int GetHashCode(Project obj)
+        {
+            return obj.Name.GetHashCode();
+        }
     }
 }

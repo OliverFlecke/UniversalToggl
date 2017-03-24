@@ -25,6 +25,8 @@ namespace UniversalToggl
         public static User user;
         public static Workspace currentWorkspace;
 
+        public static DataContainer data = new DataContainer();
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().

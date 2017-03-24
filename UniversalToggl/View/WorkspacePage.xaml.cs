@@ -7,33 +7,23 @@ using TogglAPI;
 namespace UniversalToggl.View
 {
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// A page to display all the workspace a user have.
     /// </summary>
     public sealed partial class WorkspacePage : Page
     {
-        private ObservableCollection<Workspace> workspaces = new ObservableCollection<Workspace>();
 
-        public ObservableCollection<Workspace> Workspaces
-        {
-            get { return workspaces; }
-            set { workspaces = value; }
-        }
+        public ObservableCollection<Workspace> Workspaces { get { return App.data.Workspaces; } }
 
         public WorkspacePage()
         {
             this.InitializeComponent();
-
-            Setup();
         }
 
-        private void Setup()
-        {
-            foreach (Workspace workspace in App.user.Workspaces)
-            {
-                workspaces.Add(workspace);
-            }
-        }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ListView view = sender as ListView;
