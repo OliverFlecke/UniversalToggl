@@ -42,7 +42,6 @@ namespace TogglAPI
             {
                 var span = new TimeSpan(0, 0, (int) Duration);
                 if (span.Ticks < 0) return string.Empty;
-
                 //if (span.Hours == 0 && span.Days == 0)
                 //    return string.Format("{0:00}:{1:00}", span.Minutes, span.Seconds);
                 //else
@@ -166,13 +165,14 @@ namespace TogglAPI
         /// </summary>
         /// <param name="description"></param>
         /// <returns></returns>
-        public static async Task<TimeEntry> CreateTimeEntry(string description, int workspaceId, DateTime start, int duration)
+        public static async Task<TimeEntry> CreateTimeEntry(string description, DateTime start, int duration, int projectId = 0, int workspaceId = 0)
         {
             JObject entry = new JObject();
             entry.Add("description", description);
             entry.Add("duration", duration);
             entry.Add("start", DateToISO8601(start));
-            entry.Add("wid", workspaceId);
+            if (workspaceId != 0) entry.Add("wid", workspaceId);
+            if (projectId != 0) entry.Add("pid", projectId);
             entry.Add("created_with", "C#");
 
             JObject jsonObject = new JObject();

@@ -82,46 +82,17 @@ namespace UniversalToggl.View
         }
 
         /// <summary>
-        /// Start the time entry entered into the flyout
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void StartTimeEntryButton_Click(object sender, RoutedEventArgs e)
-        {
-            string description = this.TimeEntryDescriptionBox.Text;
-            string projectName = this.TimeEntryProjectBox.Text;
-
-            try
-            {
-                // If project name is non-empty, the project must already exists
-                if (projectName != string.Empty)
-                    Projects.First(x => x.Name.ToLower() == projectName.ToLower());
-                this.ProjectBoxErrorMessage.Visibility = Visibility.Collapsed;
-                StartTimeEntry(description, projectName);
-
-                // Clear the flyout 
-                AddButton.Flyout.Hide();
-                TimeEntryDescriptionBox.Text = string.Empty;
-                TimeEntryProjectBox.Text = string.Empty;
-            }
-            catch (Exception)
-            {
-                this.ProjectBoxErrorMessage.Text = "Invalid project";
-                this.ProjectBoxErrorMessage.Visibility = Visibility.Visible;
-            }
-        }
-
-        /// <summary>
         /// Start a new time entry 
         /// </summary>
         /// <param name="description">The description of the time entry</param>
         /// <param name="projectName"></param>
-        private async void StartTimeEntry(string description, string projectName, List<Tag> tags = default(List<Tag>))
+        public async void StartTimeEntry(string description, string projectName, List<Tag> tags = null)
         {
+            if (tags == null) tags = new List<Tag>();
             TimeEntry entry;
             try
             {
-                Project project = Projects.First(x => x.Name == projectName);
+                Project project = App.data.Projects.First(x => x.Name == projectName);
                 entry = await TimeEntry.StartTimeEntry(description, project.ID, tags.ToArray());
                 entry.ProjectName = projectName;
             } 
@@ -137,7 +108,7 @@ namespace UniversalToggl.View
         /// Start a time entry with the same project and description as the argument
         /// </summary>
         /// <param name="entry">Entry to start a copy of</param>
-        private void StartTimeEntry(TimeEntry entry)
+        public void StartTimeEntry(TimeEntry entry)
         {
             if (entry.Tags == null)
                 StartTimeEntry(entry.Description, entry.ProjectName);
@@ -146,6 +117,20 @@ namespace UniversalToggl.View
                 var tags = entry.Tags.Select(x => new Tag(x)).ToList();
                 this.StartTimeEntry(entry.Description, entry.ProjectName, tags);
             }
+        }
+
+        internal async void CreateTimeEntry(string description, string projectName, DateTime start, DateTime end, List<Tag> tags = null)
+        {
+            TimeEntry entry;
+            try
+            {
+                Project project = App.data.Projects.First(x => x.Name == projectName);
+                int duration = (int) (end - start).TotalSeconds;
+                entry = await TimeEntry.CreateTimeEntry(description, start, duration, project.ID);
+
+                entry.ProjectName = project.Name;
+                App.data.TimeEntries.Add(entry);
+            } catch (Exception) { }
         }
 
         /// <summary>
@@ -171,60 +156,6 @@ namespace UniversalToggl.View
         }
 
         /// <summary>
-        /// Update the auto suggest button in the flyout to add a new task
-        /// </summary>
-        /// <param name="projectNameBox"></param>
-        /// <param name="args"></param>
-        private void TimeEntryProjectBox_TextChanged(AutoSuggestBox projectNameBox, AutoSuggestBoxTextChangedEventArgs args)
-        {
-            projectNameBox.ItemsSource = Projects.Where(x => x.Name.ToLower().StartsWith(projectNameBox.Text.ToLower())).Distinct(new ProjectNameComparer()).DefaultIfEmpty(new Project() { Name = "No results" });
-        }
-
-        /// <summary>
-        /// Makes the suggestion box pop up when the project box gets in focus.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void TimeEntryProjectBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            this.TimeEntryProjectBox_TextChanged(sender as AutoSuggestBox, new AutoSuggestBoxTextChangedEventArgs());
-        }
-
-        private void TimeEntryProjectBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
-        {
-            Project selected = args.SelectedItem as Project;
-            sender.Text = selected.Name;
-        }
-
-        private void TimeEntryDescriptionBox_KeyDown(object sender, KeyRoutedEventArgs e)
-        {
-            if (e.Key == VirtualKey.Enter)
-                StartTimeEntryButton_Click(sender, new RoutedEventArgs());
-        }
-
-        private void CancelTimeEntryButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.AddButton.Flyout.Hide();
-        }
-
-
-        /// <summary>
-        /// Event handler for the description autosuggestion box for adding new entries
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        private void TimeEntryDescriptionBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
-        {
-            sender.ItemsSource = TimeEntries.Where(x => x.Description.ToLower().StartsWith(sender.Text.ToLower())).Distinct(new DescriptionComparer());
-        }
-
-        private void TimeEntryDescriptionBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
-        {
-            var seleted = args.SelectedItem as TimeEntry;
-            sender.Text = seleted.Description;
-        }
-
-        /// <summary>
         /// Event listener for the play button on each of the time entry items in the main view.
         /// </summary>
         /// <param name="sender">The icon which has been pressed, along with the seleted item</param>
@@ -237,6 +168,11 @@ namespace UniversalToggl.View
         private void TimeEntryContent_Tapped(object sender, TappedRoutedEventArgs e)
         {
             // Navigate to some site to update the time entry
+        }
+
+        private void AddButton_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            AddTimeEntryPopup.IsOpen = true;
         }
     }
 }

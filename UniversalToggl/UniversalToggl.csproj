@@ -99,6 +99,9 @@
     <Compile Include="Dialogs\LoginDialog.xaml.cs">
       <DependentUpon>LoginDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\NewTimeEntryDialog.xaml.cs">
+      <DependentUpon>NewTimeEntryDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -145,6 +148,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="Dialogs\LoginDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\NewTimeEntryDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

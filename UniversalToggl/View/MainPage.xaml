@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:TogglAPI="using:TogglAPI"
+    xmlns:Dialogs="using:UniversalToggl.Dialogs"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -118,90 +119,20 @@
         </ListView>
 
 
+        <Popup x:Name="AddTimeEntryPopup"
+               HorizontalAlignment="Stretch"
+               IsLightDismissEnabled="True">
+            <Dialogs:NewTimeEntryDialog/>
+        </Popup>
 
         <CommandBar Grid.Row="3"
                     VerticalAlignment="Bottom"
                     ClosedDisplayMode="Compact">
             <AppBarButton x:Name="AddButton" 
                           Icon="Add" 
-                          Label="Add">
-                <AppBarButton.Flyout>
-                    <Flyout Placement="Full">
-                        <Flyout.FlyoutPresenterStyle>
-                            <Style TargetType="FlyoutPresenter">
-                                <Setter Property="Background" Value="Black"/>
-                                <Setter Property="HorizontalAlignment" Value="Center"/>
-                                <Setter Property="TabNavigation" Value="Cycle"/>
-                                <Setter Property="MinWidth" Value="300"/>
-                                <Setter Property="BorderBrush" Value="Red"/>
-                                <Setter Property="BorderThickness" Value="2"/>
-                            </Style>
-                        </Flyout.FlyoutPresenterStyle>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <StackPanel>
-                                <TextBlock Text="Start Time Entry"
-                                           Margin="0,0,0,6"
-                                           FontSize="18"/>
-                                <AutoSuggestBox x:Name="TimeEntryDescriptionBox"
-                                         Header="Description"
-                                         TextChanged="TimeEntryDescriptionBox_TextChanged"
-                                         SuggestionChosen="TimeEntryDescriptionBox_SuggestionChosen"
-                                         TextMemberPath="Description"
-                                         DisplayMemberPath="Description"
-                                         KeyDown="TimeEntryDescriptionBox_KeyDown"/>
-                                <AutoSuggestBox x:Name="TimeEntryProjectBox" 
-                                                Header="Project"
-                                                KeyDown="TimeEntryDescriptionBox_KeyDown"
-                                                TextChanged="TimeEntryProjectBox_TextChanged"
-                                                SuggestionChosen="TimeEntryProjectBox_SuggestionChosen"
-                                                TextMemberPath="Name"
-                                                DisplayMemberPath="Name"
-                                                IsTabStop="False"
-                                                GotFocus="TimeEntryProjectBox_GotFocus"/>
-
-                                <TextBlock x:Name="ProjectBoxErrorMessage"
-                                           Text="Error message"
-                                           Foreground="Red"
-                                           Margin="0,6,0,0"
-                                           Visibility="Collapsed"/>
-                            
-                                <!--<StackPanel>
-                                    <DatePicker Margin="0,12"/>
-                                    <TimePicker/>
-                                </StackPanel>
-                                <StackPanel>
-                                    <DatePicker Margin="0,12"/>
-                                    <TimePicker/>
-                                </StackPanel>-->
-                            </StackPanel>
-                            
-                            
-                            <Grid Grid.Row="1" 
-                                  VerticalAlignment="Top"
-                                  Margin="0,12,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Button x:Name="StartTimeEntryButton" 
-                                        Content="Start"
-                                        HorizontalAlignment="Stretch"
-                                        Margin="12,0"
-                                        Click="StartTimeEntryButton_Click"/>
-                                <Button Grid.Column="1" 
-                                        x:Name="CancelTimeEntryButton"
-                                        Content="Cancel"
-                                        HorizontalAlignment="Stretch"
-                                        Margin="12,0"
-                                        Click="CancelTimeEntryButton_Click"/>
-                            </Grid>
-                        </Grid>
-                    </Flyout>
-                </AppBarButton.Flyout>
+                          Label="Add"
+                          Tapped="AddButton_Tapped">
+                
             </AppBarButton>
         </CommandBar>
     </Grid>

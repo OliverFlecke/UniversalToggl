@@ -137,15 +137,33 @@ namespace TogglAPITests
         [TestMethod]
         [TestCategory("Web API")]
         [TestCategory("POST")]
-        public void CreateTimeEntryTest()
+        public void CreateTimeEntryWithWorkspaceTest()
         {
-            Task<TimeEntry> task = TimeEntry.CreateTimeEntry("New time entry", WorkspaceTests.workspaceId, 
-                new DateTime(2016, 9, 20, 10, 35, 17), 100);
+            Task<TimeEntry> task = TimeEntry.CreateTimeEntry("New time entry", 
+                new DateTime(2016, 9, 20, 10, 35, 17), 100, workspaceId: WorkspaceTests.workspaceId);
             task.Wait();
             TimeEntry entry = task.Result;
 
             Assert.IsNotNull(entry);
             Assert.AreEqual("New time entry", entry.Description);
+
+            // Clean up
+            TimeEntry.DeleteEntry(entry.Id).Wait();
+        }
+
+        [TestMethod]
+        [TestCategory("Web API")]
+        [TestCategory("POST")]
+        public void CreateTimeEntryWithProjectTest()
+        {
+            Task<TimeEntry> task = TimeEntry.CreateTimeEntry("New time entry",
+            new DateTime(2016, 9, 20, 10, 35, 17), 100, projectId: 33544573);
+            task.Wait();
+            TimeEntry entry = task.Result;
+
+            Assert.IsNotNull(entry);
+            Assert.AreEqual("New time entry", entry.Description);
+            Assert.AreEqual(33544573, entry.ProjectId);
 
             // Clean up
             TimeEntry.DeleteEntry(entry.Id).Wait();
