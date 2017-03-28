@@ -72,7 +72,7 @@
                   HorizontalContentAlignment="Stretch">
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="TogglAPI:TimeEntry">
-                    <Grid>
+                    <Grid Height="48">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
@@ -95,7 +95,8 @@
                         <Grid Grid.Column="1"
                               HorizontalAlignment="Right"
                               VerticalAlignment="Center"
-                              Margin="12,0">
+                              Margin="12,0"
+                              Visibility="Collapsed">
                             <Ellipse Fill="Gray" Width="36" Height="36"
                                      VerticalAlignment="Center"
                                      HorizontalAlignment="Center"/>

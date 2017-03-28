@@ -165,9 +165,16 @@ namespace UniversalToggl.View
             StartTimeEntry((sender as Grid).DataContext as TimeEntry);
         }
 
+        /// <summary>
+        /// Event handler when selecting items in the list view
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TimeEntryContent_Tapped(object sender, TappedRoutedEventArgs e)
         {
             // Navigate to some site to update the time entry
+            var frame = Window.Current.Content as RootControl;
+            frame.RootFrame.Navigate(typeof(TimeEntryDetailsPage), (sender as StackPanel).DataContext);
         }
 
         private void AddButton_Tapped(object sender, TappedRoutedEventArgs e)

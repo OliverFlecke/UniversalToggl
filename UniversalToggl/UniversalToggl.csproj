@@ -119,6 +119,9 @@
     <Compile Include="View\TagsPage.xaml.cs">
       <DependentUpon>TagsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\TimeEntryDetailsPage.xaml.cs">
+      <DependentUpon>TimeEntryDetailsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\WorkspacePage.xaml.cs">
       <DependentUpon>WorkspacePage.xaml</DependentUpon>
     </Compile>
@@ -172,6 +175,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\TagsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\TimeEntryDetailsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

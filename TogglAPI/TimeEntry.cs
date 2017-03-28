@@ -42,10 +42,7 @@ namespace TogglAPI
             {
                 var span = new TimeSpan(0, 0, (int) Duration);
                 if (span.Ticks < 0) return string.Empty;
-                //if (span.Hours == 0 && span.Days == 0)
-                //    return string.Format("{0:00}:{1:00}", span.Minutes, span.Seconds);
-                //else
-                    return string.Format("{0:00}:{1:00}:{2:00}", span.Days * 24 + span.Hours, span.Minutes, span.Seconds);
+                return string.Format("{0:00}:{1:00}:{2:00}", span.Days * 24 + span.Hours, span.Minutes, span.Seconds);
             }
         }
 
