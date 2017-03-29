@@ -195,6 +195,7 @@ namespace TogglAPITests
             Assert.AreEqual(entry.Duration, updateEntry.Duration);
         }
 
+
         [TestMethod]
         [TestCategory("Web API")]
         [TestCategory("PUT")]
@@ -256,6 +257,31 @@ namespace TogglAPITests
                 Assert.AreEqual(tag.Name, enumerator.Current);
                 enumerator.MoveNext();
             }
+        }
+
+        [TestMethod]
+        [TestCategory("Web API")]
+        [TestCategory("PUT")]
+        public void UpdateTimeEntryWithObjectTest()
+        {
+            // Is there a difference is the entry is already running?
+            Assert.AreEqual(description, entry.Description);
+            entry.Description = "Updated description!";
+            var startDate = new DateTime(2017, 1, 1);
+            var stopDate = new DateTime(2017, 1, 1, 1, 5, 20);
+            entry.Start = startDate;
+            entry.Stop = stopDate;
+            entry.Tags.Add("New test tag!");
+
+            Task<TimeEntry> task = TimeEntry.UpdateEntry(entry);
+            task.Wait();
+            entry = task.Result;
+
+            Assert.AreEqual(id, entry.Id);
+            Assert.AreEqual("Updated description!", entry.Description);
+            Assert.AreEqual(startDate, entry.Start);
+            Assert.AreEqual(stopDate, entry.Stop);
+            Assert.IsTrue(entry.Tags.Contains("New test tag!"));
         }
 
         [TestMethod]

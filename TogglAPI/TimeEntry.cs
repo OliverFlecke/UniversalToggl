@@ -53,7 +53,8 @@ namespace TogglAPI
         public DateTime LastUpdated { get; set; }
 
         [JsonProperty(PropertyName = "tags")]
-        public List<string> Tags { get; set; }
+        public List<string> Tags { get; set; } = new List<string>();
+
 
         //public List<Tag> Tags { get; set; }
         #endregion
@@ -69,6 +70,7 @@ namespace TogglAPI
             if (description == null) this.Description = string.Empty;
             else this.Description = description;
         }
+
 
         /// <summary>
         /// Create a time entry object from a string of json
@@ -207,6 +209,19 @@ namespace TogglAPI
             return CreateTimeEntryFromJson(JObject.Parse(response).SelectToken("data").ToString());
         }
 
+        /// <summary>
+        /// Update a time entry with all its local data
+        /// </summary>
+        /// <param name="entry">Entry to update</param>
+        /// <returns>The entry with all the updated data</returns>
+        public static async Task<TimeEntry> UpdateEntry(TimeEntry entry)
+        {
+            List<Tag> tags = new List<Tag>();
+            foreach (string name in entry.Tags)
+                tags.Add(new Tag(name));
+            return await UpdateEntry(entry.Id, entry.Description, tags, entry.Start, entry.Stop);
+        }
+
         public static async Task<List<TimeEntry>> GetTimeEntriesInRange()
         {
             string response = await Connection.GetAsync("time_entries");
@@ -233,11 +248,7 @@ namespace TogglAPI
             }
 
             string response = await Connection.GetAsync(url);
-
-            // The response need to be split into lists
-            List<TimeEntry> entries = JsonConvert.DeserializeObject<List<TimeEntry>>(response);
-
-            return entries;
+            return  JsonConvert.DeserializeObject<List<TimeEntry>>(response);
         }
 
         /// <summary>

@@ -49,7 +49,8 @@ namespace UniversalToggl
                     Tags.Add(tag);
             }
 
-            var entries = await TimeEntry.GetTimeEntriesInRange();
+            // Get all entries from 10 days ago and until today. Maybe need for more later
+            var entries = await TimeEntry.GetTimeEntriesInRange(DateTime.Today.Subtract(new TimeSpan(10, 0, 0, 0)), DateTime.Now);
             // If there is a running entry, make sure it does not show up in the list of time entries
             if (runningTimeEntry.Entry != null)
             {

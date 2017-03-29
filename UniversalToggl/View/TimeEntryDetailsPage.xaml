@@ -14,39 +14,53 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <StackPanel Margin="6,6,6,0">
-            <TextBox Text="{x:Bind Entry.Description}"
-                     FontSize="{StaticResource HubHeaderThemeFontSize}"/>
+            <TextBlock Text="Details"
+                       FontSize="{StaticResource HubHeaderThemeFontSize}"
+                       Margin="0,0,0,6"/>
+            <TextBox x:Name="DescriptionBox"
+                     Text="{x:Bind Entry.Description}"
+                     FontSize="{StaticResource HubSectionHeaderThemeFontSize}"/>
 
-            <TextBlock Text="{x:Bind Entry.ProjectName}"
+            <TextBlock x:Name="ProjectBox"
+                       Text="{x:Bind Entry.ProjectName}"
                        Margin="0,6"/>
             <StackPanel Margin="0,6"
                         HorizontalAlignment="Left"
                         MinWidth="300">
-                <DatePicker Date="{x:Bind StartDate, Mode=OneWay}"
+                <DatePicker x:Name="StartDatePicker" 
+                            Date="{x:Bind StartDate, Mode=TwoWay}"
                             Header="Start date and time"
                             HorizontalAlignment="Stretch"
                             Margin="0,0,0,6"/>
-                <TimePicker Time="{x:Bind Entry.Start.TimeOfDay, Mode=OneWay}"
+                <TimePicker x:Name="StartTime" 
+                            Time="{x:Bind Entry.Start.TimeOfDay, Mode=OneWay}"
                             HorizontalAlignment="Stretch"/>
             </StackPanel>
 
             <StackPanel Margin="0,6"
                         HorizontalAlignment="Left"
                         MinWidth="300">
-                <DatePicker Date="{x:Bind EndDate, Mode=OneWay}"
+                <DatePicker x:Name="EndDatePicker" 
+                            Date="{x:Bind EndDate, Mode=TwoWay}"
                             Header="End date and time"
                             HorizontalAlignment="Stretch"
                             Margin="0,0,0,6"/>
-                <TimePicker Time="{x:Bind Entry.Stop.TimeOfDay, Mode=OneWay}"
+                <TimePicker x:Name="EndTime" 
+                            Time="{x:Bind Entry.Stop.TimeOfDay, Mode=OneWay}"
                             HorizontalAlignment="Stretch"/>
             </StackPanel>
 
-            <ListView ItemsSource="{x:Bind Entry.Tags}">
+            <ListView ItemsSource="{x:Bind Entry.Tags}"
+                      BorderBrush="Red"
+                      BorderThickness="1">
             </ListView>
         </StackPanel>
 
         <CommandBar Grid.Row="1">
-            
+            <AppBarButton x:Name="UpdateEntryButton"
+                          Icon="Save"
+                          Content="Update Entry"
+                          Tapped="UpdateEntryButton_Tapped"/>
         </CommandBar>
     </Grid>
 </Page>
