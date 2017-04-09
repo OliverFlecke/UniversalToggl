@@ -7,7 +7,75 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:TogglAPI="using:TogglAPI"
     xmlns:Dialogs="using:UniversalToggl.Dialogs"
+    xmlns:model="using:UniversalToggl.View.Model"
     mc:Ignorable="d">
+
+    <Page.Resources>
+        <DataTemplate x:Key="CollapsedItem" x:DataType="model:TimeEntryByDateViewModel">
+            <TextBlock Text="{x:Bind DateAsString}" FontSize="{StaticResource ListViewHeaderItemThemeFontSize}"/>
+        </DataTemplate>
+        <DataTemplate x:Key="ExpandedItem" x:DataType="model:TimeEntryByDateViewModel">
+            <StackPanel Margin="0,0,0,12">
+                <TextBlock Text="{x:Bind DateAsString}" FontSize="{StaticResource ListViewHeaderItemThemeFontSize}"/>
+                <ListView x:Name="TimeEntryListContent" 
+                          ItemsSource="{x:Bind Entries, Mode=OneWay}"
+                          VerticalAlignment="Stretch"
+                          HorizontalContentAlignment="Stretch">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="TogglAPI:TimeEntry">
+                            <Grid Height="48"
+                                  Background="DarkGray"
+                                  BorderBrush="DarkRed"
+                                  BorderThickness="1"
+                                  Margin="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid x:Name="PlayButton" Tapped="PlayButton_Tapped" Margin="3">
+                                    <Ellipse Fill="Green" Width="36" Height="36"/>
+                                    <SymbolIcon Symbol="Play" />
+                                </Grid>
+                                <StackPanel Grid.Column="1" 
+                                            x:Name="TimeEntryContent"
+                                            Margin="12,0"
+                                            Tapped="TimeEntryContent_Tapped">
+                                    <TextBlock Text="{x:Bind Description}"
+                                               Foreground="Black"
+                                               Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                                    <TextBlock Text="{x:Bind ProjectName}"
+                                               Foreground="Black"
+                                               Style="{ThemeResource BodyTextBlockStyle}"/>
+                                </StackPanel>
+                                <Grid Grid.Column="1"
+                                      HorizontalAlignment="Right"
+                                      VerticalAlignment="Center"
+                                      Margin="12,0"
+                                      Visibility="Collapsed">
+                                    <Ellipse Fill="Gray" Width="36" Height="36"
+                                             VerticalAlignment="Center"
+                                             HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{x:Bind Tags.Count}"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Center"/>
+                                </Grid>
+                                <Border Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                    <TextBlock Text="{x:Bind DurationAsString}" Foreground="Black" Margin="6"/>
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Padding" Value="6,0"></Setter>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
+            </StackPanel>
+        </DataTemplate>
+    </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
@@ -17,7 +85,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Universal Toggl"
+        <TextBlock Text="Entries"
                    FontFamily="{StaticResource PivotTitleFontFamily}" 
                    FontSize="{StaticResource HubHeaderThemeFontSize}"
                    Margin="6,0,0,6"/>
@@ -28,8 +96,7 @@
               BorderThickness="0"
               Background="Gray"
               Visibility="Collapsed">
-            <StackPanel Margin="6"
-                        Background="Gray">
+            <StackPanel Margin="6" Background="Gray">
                 <TextBlock Text="{x:Bind RunningTimeEntry.Entry.Description, Mode=OneWay}"
                            FontSize="{StaticResource HubSectionHeaderThemeFontSize}"
                            HorizontalAlignment="Left"/>
@@ -67,54 +134,14 @@
         </Grid>
 
         <ListView Grid.Row="2"
+                  x:Name="TimeEntryListView"
                   ItemsSource="{x:Bind TimeEntries, Mode=OneWay}"
-                  VerticalAlignment="Stretch"
-                  HorizontalContentAlignment="Stretch">
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="TogglAPI:TimeEntry">
-                    <Grid Height="48">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid x:Name="PlayButton"
-                                Tapped="PlayButton_Tapped">
-                            <Ellipse Fill="Green" Width="36" Height="36"/>
-                            <SymbolIcon Symbol="Play" />
-                        </Grid>
-                        <StackPanel Grid.Column="1" 
-                                    x:Name="TimeEntryContent"
-                                    Margin="12,0"
-                                    Tapped="TimeEntryContent_Tapped">
-                            <TextBlock Text="{x:Bind Description}"
-                                                Style="{ThemeResource SubtitleTextBlockStyle}"/>
-                            <TextBlock Text="{x:Bind ProjectName}"
-                                                Style="{ThemeResource BodyTextBlockStyle}"/>
-                        </StackPanel>
-                        <Grid Grid.Column="1"
-                              HorizontalAlignment="Right"
-                              VerticalAlignment="Center"
-                              Margin="12,0"
-                              Visibility="Collapsed">
-                            <Ellipse Fill="Gray" Width="36" Height="36"
-                                     VerticalAlignment="Center"
-                                     HorizontalAlignment="Center"/>
-                            <TextBlock Text="{x:Bind Tags.Count}"
-                                       VerticalAlignment="Center"
-                                       HorizontalAlignment="Center"/>
-                        </Grid>    
-                            
-                        <Border Grid.Column="2" HorizontalAlignment="Right"
-                                VerticalAlignment="Center">
-                            <TextBlock Text="{x:Bind DurationAsString}"/>
-                        </Border>
-                    </Grid>
-                </DataTemplate>
-            </ListView.ItemTemplate>
+                  ItemTemplate="{StaticResource ExpandedItem}"
+                  Tapped="TimeEntryListView_Tapped">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="Padding" Value="6,0"/>
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
@@ -133,7 +160,6 @@
                           Icon="Add" 
                           Label="Add"
                           Tapped="AddButton_Tapped">
-                
             </AppBarButton>
         </CommandBar>
     </Grid>

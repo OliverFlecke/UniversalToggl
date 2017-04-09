@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.ObjectModel;
 using TogglAPI;
 using UniversalToggl.View.Model;
+using System.Threading.Tasks;
 
 namespace UniversalToggl
 {
@@ -29,7 +30,7 @@ namespace UniversalToggl
         /// 
         /// Note: at the moment, only data is recived from the server, as there is no offline tracking
         /// </summary>
-        public async void Synchronice()
+        public async Task Synchronice()
         {
             // Reset the list of content
             workspaces.Clear();

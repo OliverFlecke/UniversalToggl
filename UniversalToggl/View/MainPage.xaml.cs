@@ -20,7 +20,9 @@ namespace UniversalToggl.View
         #region Properties
         public TimeEntryViewModel RunningTimeEntry { get { return App.data.RunningTimeEntry; } }
 
-        public ObservableCollection<TimeEntry> TimeEntries { get { return App.data.TimeEntries; } }
+        private ObservableCollection<TimeEntryByDateViewModel> timeEntries = new ObservableCollection<TimeEntryByDateViewModel>();
+        public ObservableCollection<TimeEntryByDateViewModel> TimeEntries { get { return timeEntries; } }
+        //public ObservableCollection<TimeEntry> TimeEntries { get { return App.data.TimeEntries; } }
         public ObservableCollection<Workspace> Workspaces { get { return App.data.Workspaces; } }
         public ObservableCollection<Project> Projects { get { return App.data.Projects; } }
         #endregion
@@ -61,8 +63,23 @@ namespace UniversalToggl.View
             }
 
             UpdateRunningTimeEntry();
-            if (!TimeEntries.Any())
-                App.data.Synchronice();
+            if (!App.data.TimeEntries.Any())
+                await App.data.Synchronice();
+
+            foreach (TimeEntry entry in App.data.TimeEntries)
+            {
+                TimeEntryByDateViewModel model;
+                try
+                {
+                    model = TimeEntries.First<TimeEntryByDateViewModel>(x => x.Date == entry.Start.Date);
+                }
+                catch (Exception)
+                {
+                    model = new TimeEntryByDateViewModel(entry.Start.Date);
+                    TimeEntries.Add(model);
+                }
+                model.Entries.Add(entry);
+            }
         }
 
         /// <summary>
@@ -148,7 +165,7 @@ namespace UniversalToggl.View
             }
             catch (Exception) { }
             
-            TimeEntries.Insert(0, entry);
+            App.data.TimeEntries.Insert(0, entry);
 
             // Hid the running entry panel
             this.RunningTimeEntryDisplay.Visibility = Visibility.Collapsed;
@@ -180,6 +197,31 @@ namespace UniversalToggl.View
         private void AddButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
             AddTimeEntryPopup.IsOpen = true;
+        }
+
+        /// <summary>
+        /// Collapse and expand each item in the listview when the item is pressed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TimeEntryListView_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            var list = sender as ListView;
+            ListViewItem item = (list.ContainerFromIndex(list.SelectedIndex)) as ListViewItem;
+
+            var model = list.SelectedItem as TimeEntryByDateViewModel;
+            if (model.IsVisible == Visibility.Visible)
+            {
+                model.IsVisible = Visibility.Collapsed;
+                item.ContentTemplate = Resources["CollapsedItem"] as DataTemplate;
+
+            }
+            else
+            {
+                model.IsVisible = Visibility.Visible;
+                item.ContentTemplate = Resources["ExpandedItem"] as DataTemplate;
+            }
+            item.IsSelected = false;
         }
     }
 }
