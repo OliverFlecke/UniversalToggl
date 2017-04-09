@@ -11,7 +11,7 @@ namespace UniversalToggl.View
     /// </summary>
     public sealed partial class TagsPage : Page
     {
-        public ObservableCollection<Tag> Tags { get { return App.data.Tags; } }
+        public ObservableCollection<Tag> Tags { get { return App.Data.Tags; } }
 
         public TagsPage()
         {

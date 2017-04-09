@@ -35,7 +35,7 @@ namespace UniversalToggl.Dialogs
         /// <param name="args"></param>
         private void TimeEntryProjectBox_TextChanged(AutoSuggestBox projectNameBox, AutoSuggestBoxTextChangedEventArgs args)
         {
-            projectNameBox.ItemsSource = App.data.Projects.Where(x => x.Name.ToLower().StartsWith(projectNameBox.Text.ToLower())).Distinct(new ProjectNameComparer()).DefaultIfEmpty(new Project() { Name = "No results" });
+            projectNameBox.ItemsSource = App.Data.Projects.Where(x => x.Name.ToLower().StartsWith(projectNameBox.Text.ToLower())).Distinct(new ProjectNameComparer()).DefaultIfEmpty(new Project() { Name = "No results" });
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace UniversalToggl.Dialogs
             {
                 // If project name is non-empty, the project must already exists
                 if (projectName != string.Empty)
-                    App.data.Projects.First(x => x.Name.ToLower() == projectName.ToLower());
+                    App.Data.Projects.First(x => x.Name.ToLower() == projectName.ToLower());
                 this.ProjectBoxErrorMessage.Visibility = Visibility.Collapsed;
             }
             catch (Exception)
@@ -124,7 +124,7 @@ namespace UniversalToggl.Dialogs
         /// <param name="args"></param>
         private void TimeEntryDescriptionBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
-            sender.ItemsSource = App.data.TimeEntries.Where(x => x.Description.ToLower().StartsWith(sender.Text.ToLower())).Distinct(new DescriptionComparer());
+            sender.ItemsSource = App.Data.TimeEntries.Where(x => x.Description.ToLower().StartsWith(sender.Text.ToLower())).Distinct(new DescriptionComparer());
         }
 
         private void TimeEntryDescriptionBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)

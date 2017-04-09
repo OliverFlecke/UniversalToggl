@@ -15,7 +15,7 @@ namespace UniversalToggl.View
             this.InitializeComponent();
         }
 
-        private void ClearLoginDetailsButton_Click(object sender, RoutedEventArgs e)
+        private void ClearLoginDetailsButton_Tapped(object sender, RoutedEventArgs e)
         {
             string username = App.localStorage.Values["username"] as string;
             if (username != null)
@@ -25,6 +25,21 @@ namespace UniversalToggl.View
             }
             this.ClearedDetailsTextBlock.Text = "Your details have now been cleared";
             this.ClearedDetailsTextBlock.Visibility = Visibility.Visible;
+        }
+
+        private void ClearLocalData_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+            App.ClearSaveData();
+        }
+
+        private void SaveToLocalStorage_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+            App.SaveAppData();
+        }
+
+        private void ReadDataFromStorage_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+            App.ReadAppData();
         }
     }
 }

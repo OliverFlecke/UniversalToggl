@@ -9,6 +9,12 @@ using Windows.Security.Credentials;
 using Windows.Storage;
 using Windows.UI.ViewManagement;
 using UniversalToggl.View;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace UniversalToggl
 {
@@ -25,7 +31,7 @@ namespace UniversalToggl
         public static User user;
         public static Workspace currentWorkspace;
 
-        public static DataContainer data = new DataContainer();
+        public static DataContainer Data = new DataContainer();
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -57,7 +63,7 @@ namespace UniversalToggl
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
@@ -67,7 +73,9 @@ namespace UniversalToggl
 #endif
 
             var rootFrame = Window.Current.Content as RootControl;
-            
+
+            await ReadAppData();
+
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
             if (rootFrame == null)
@@ -120,7 +128,117 @@ namespace UniversalToggl
         {
             var deferral = e.SuspendingOperation.GetDeferral();
             //TODO: Save application state and stop any background activity
+            SaveAppData();
+
             deferral.Complete();
         }
+
+        /// <summary>
+        /// Delete all locally storaged data
+        /// </summary>
+        public static async void ClearSaveData()
+        {
+            try
+            {
+                var file = await ApplicationData.Current.LocalFolder.TryGetItemAsync("TimeEntries");
+                if (file != null) await file.DeleteAsync();
+                file = await ApplicationData.Current.LocalFolder.TryGetItemAsync("Workspaces");
+                if (file != null) await file.DeleteAsync();
+                file = await ApplicationData.Current.LocalFolder.TryGetItemAsync("Projects");
+                if (file != null) await file.DeleteAsync();
+                file = await ApplicationData.Current.LocalFolder.TryGetItemAsync("Tags");
+                if (file != null) await file.DeleteAsync();
+            }
+            catch (IOException)
+            { }
+        }
+
+        /// <summary>
+        /// Save the app data to the local storage
+        /// </summary>
+        /// <returns></returns>
+        public static void SaveAppData()
+        {
+            SaveData("TimeEntries", typeof(ObservableCollection<TimeEntry>), Data.TimeEntries);
+            SaveData("Workspaces", typeof(ObservableCollection<Workspace>), Data.Workspaces);
+            SaveData("Projects", typeof(ObservableCollection<Project>), Data.Projects);
+            SaveData("Tags", typeof(ObservableCollection<Tag>), Data.Tags);
+        }
+
+        /// <summary>
+        /// Save data to the local storage
+        /// </summary>
+        /// <param name="name">Name of the file to storage the data in</param>
+        /// <param name="type">The type of the data to store</param>
+        /// <param name="data">The data to store</param>
+        private static async void SaveData(string name, Type type, ICollection data)
+        {
+            StorageFile file = null;
+            try
+            {
+                file = await ApplicationData.Current.LocalFolder.CreateFileAsync(name, CreationCollisionOption.ReplaceExisting);
+                using (Stream writer = await file.OpenStreamForWriteAsync())
+                {
+                    DataContractSerializer serializer = new DataContractSerializer(type);
+                    serializer.WriteObject(writer, data);
+                    await writer.FlushAsync();
+                    writer.Dispose();
+                }
+            }
+            catch (SerializationException)
+            {
+                if (file != null)
+                    await file.DeleteAsync();
+            }
+        }
+
+        /// <summary>
+        /// Read the data from local storage, if any
+        /// </summary>
+        /// <returns></returns>
+        public static async Task ReadAppData()
+        {
+            var file = await ApplicationData.Current.LocalFolder.TryGetItemAsync("TimeEntries");
+            if (file != null)
+            {
+                using (Stream reader = await (file as StorageFile).OpenStreamForReadAsync())
+                {
+                    DataContractSerializer serializer = new DataContractSerializer(typeof(ObservableCollection<TimeEntry>));
+                    Data.TimeEntries = (ObservableCollection<TimeEntry>)serializer.ReadObject(reader);
+                    reader.Dispose();
+                }
+            }
+            file = await ApplicationData.Current.LocalFolder.TryGetItemAsync("Workspaces");
+            if (file != null)
+            {
+                using (Stream reader = await (file as StorageFile).OpenStreamForReadAsync())
+                {
+                    DataContractSerializer serializer = new DataContractSerializer(typeof(ObservableCollection<Workspace>));
+                    Data.Workspaces = (ObservableCollection<Workspace>) serializer.ReadObject(reader);
+                    reader.Dispose();
+                }
+            }
+            file = await ApplicationData.Current.LocalFolder.TryGetItemAsync("Projects");
+            if (file != null)
+            {
+                using (Stream reader = await (file as StorageFile).OpenStreamForReadAsync())
+                {
+                    DataContractSerializer serializer = new DataContractSerializer(typeof(ObservableCollection<Project>));
+                    Data.Projects = (ObservableCollection<Project>)serializer.ReadObject(reader);
+                    reader.Dispose();
+                }
+            }
+            file = await ApplicationData.Current.LocalFolder.TryGetItemAsync("Tags");
+            if (file != null)
+            {
+                using (Stream reader = await (file as StorageFile).OpenStreamForReadAsync())
+                {
+                    DataContractSerializer serializer = new DataContractSerializer(typeof(ObservableCollection<Tag>));
+                    Data.Tags = (ObservableCollection<Tag>)serializer.ReadObject(reader);
+                    reader.Dispose();
+                }
+            }
+        }
+
     }
 }

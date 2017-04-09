@@ -22,10 +22,27 @@
                        Margin="0,12"/>
             <Button x:Name="ClearLoginDetailsButton" 
                     Content="Clear login details" 
-                    Click="ClearLoginDetailsButton_Click" />
+                    Tapped="ClearLoginDetailsButton_Tapped" />
             <TextBlock x:Name="ClearedDetailsTextBlock"
                        Visibility="Collapsed"
                        Foreground="Red"/>
+            <TextBlock Text="Update local storage"
+                       Margin="0,12"/>
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="ClearLocalData"
+                        Content="Clear local data"
+                        Tapped="ClearLocalData_Tapped"
+                        MinWidth="100"/>
+                <Button x:Name="SaveToLocalStorage"
+                        Content="Save data locally"
+                        Tapped="SaveToLocalStorage_Tapped"
+                        Margin="12,0"
+                        MinWidth="100"/>
+                <Button x:Name="ReadDataFromStorage"
+                        Content="Read Data"
+                        Tapped="ReadDataFromStorage_Tapped"
+                        MinWidth="100"/>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Page>

@@ -18,13 +18,13 @@ namespace UniversalToggl.View
     public sealed partial class MainPage : Page
     {
         #region Properties
-        public TimeEntryViewModel RunningTimeEntry { get { return App.data.RunningTimeEntry; } }
+        public TimeEntryViewModel RunningTimeEntry { get { return App.Data.RunningTimeEntry; } }
 
         private ObservableCollection<TimeEntryByDateViewModel> timeEntries = new ObservableCollection<TimeEntryByDateViewModel>();
         public ObservableCollection<TimeEntryByDateViewModel> TimeEntries { get { return timeEntries; } }
         //public ObservableCollection<TimeEntry> TimeEntries { get { return App.data.TimeEntries; } }
-        public ObservableCollection<Workspace> Workspaces { get { return App.data.Workspaces; } }
-        public ObservableCollection<Project> Projects { get { return App.data.Projects; } }
+        public ObservableCollection<Workspace> Workspaces { get { return App.Data.Workspaces; } }
+        public ObservableCollection<Project> Projects { get { return App.Data.Projects; } }
         #endregion
 
         public MainPage()
@@ -63,10 +63,10 @@ namespace UniversalToggl.View
             }
 
             UpdateRunningTimeEntry();
-            if (!App.data.TimeEntries.Any())
-                await App.data.Synchronice();
+            if (!App.Data.TimeEntries.Any())
+                await App.Data.Synchronice();
 
-            foreach (TimeEntry entry in App.data.TimeEntries)
+            foreach (TimeEntry entry in App.Data.TimeEntries)
             {
                 TimeEntryByDateViewModel model;
                 try
@@ -109,7 +109,7 @@ namespace UniversalToggl.View
             TimeEntry entry;
             try
             {
-                Project project = App.data.Projects.First(x => x.Name == projectName);
+                Project project = App.Data.Projects.First(x => x.Name == projectName);
                 entry = await TimeEntry.StartTimeEntry(description, project.ID, tags.ToArray());
                 entry.ProjectName = projectName;
             } 
@@ -141,12 +141,12 @@ namespace UniversalToggl.View
             TimeEntry entry;
             try
             {
-                Project project = App.data.Projects.First(x => x.Name == projectName);
+                Project project = App.Data.Projects.First(x => x.Name == projectName);
                 int duration = (int) (end - start).TotalSeconds;
                 entry = await TimeEntry.CreateTimeEntry(description, start, duration, project.ID);
 
                 entry.ProjectName = project.Name;
-                App.data.TimeEntries.Add(entry);
+                App.Data.TimeEntries.Add(entry);
             } catch (Exception) { }
         }
 
@@ -165,7 +165,7 @@ namespace UniversalToggl.View
             }
             catch (Exception) { }
             
-            App.data.TimeEntries.Insert(0, entry);
+            App.Data.TimeEntries.Insert(0, entry);
 
             // Hid the running entry panel
             this.RunningTimeEntryDisplay.Visibility = Visibility.Collapsed;

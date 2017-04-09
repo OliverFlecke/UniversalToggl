@@ -27,10 +27,10 @@ namespace UniversalToggl.View
 
         private void Setup()
         {
-            foreach (Workspace workspace in App.data.Workspaces)
+            foreach (Workspace workspace in App.Data.Workspaces)
             {
                 WorkspaceViewModel model = new WorkspaceViewModel(workspace);
-                foreach (Project project in App.data.Projects.Where(x => x.WorkspaceID == workspace.Id))
+                foreach (Project project in App.Data.Projects.Where(x => x.WorkspaceID == workspace.Id))
                 {
                     model.Projects.Add(project);
                 }

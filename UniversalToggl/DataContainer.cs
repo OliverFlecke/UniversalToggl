@@ -13,16 +13,32 @@ namespace UniversalToggl
         public TimeEntryViewModel RunningTimeEntry { get { return runningTimeEntry; } }
 
         private ObservableCollection<TimeEntry> timeEntries = new ObservableCollection<TimeEntry>();
-        public ObservableCollection<TimeEntry> TimeEntries { get { return timeEntries; } }
+        public ObservableCollection<TimeEntry> TimeEntries
+        {
+            get { return timeEntries; }
+            set { timeEntries = value; }
+        }
 
         private ObservableCollection<Workspace> workspaces = new ObservableCollection<Workspace>();
-        public ObservableCollection<Workspace> Workspaces { get { return workspaces; } }
+        public ObservableCollection<Workspace> Workspaces
+        {
+            get { return workspaces; }
+            set { workspaces = value; }
+        }
 
         private ObservableCollection<Project> projects = new ObservableCollection<Project>();
-        public ObservableCollection<Project> Projects { get { return projects; } }
+        public ObservableCollection<Project> Projects
+        {
+            get { return projects; }
+            set { projects = value; }
+        }
 
         private ObservableCollection<Tag> tags = new ObservableCollection<Tag>();
-        public ObservableCollection<Tag> Tags { get { return tags; } }
+        public ObservableCollection<Tag> Tags
+        {
+            get { return tags; }
+            set { tags = value; }
+        }
 
 
         /// <summary>
@@ -36,6 +52,7 @@ namespace UniversalToggl
             workspaces.Clear();
             projects.Clear();
             timeEntries.Clear();
+            tags.Clear();
 
             var spaces = await Workspace.GetWorkspaces();
             foreach (Workspace workspace in spaces)

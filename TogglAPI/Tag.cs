@@ -2,18 +2,23 @@
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Runtime.Serialization;
 
 namespace TogglAPI
 {
+    [DataContract]
     public class Tag
     {
         #region Properties
+        [DataMember]
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
 
+        [DataMember]
         [JsonProperty(PropertyName = "id", Required = Required.AllowNull)]
         public int Id { get; set; }
 
+        [DataMember]
         [JsonProperty(PropertyName = "wid", Required = Required.AllowNull)]
         public int WorkspaceId { get; set; }
         #endregion

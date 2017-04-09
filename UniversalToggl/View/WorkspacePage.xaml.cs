@@ -12,7 +12,7 @@ namespace UniversalToggl.View
     public sealed partial class WorkspacePage : Page
     {
 
-        public ObservableCollection<Workspace> Workspaces { get { return App.data.Workspaces; } }
+        public ObservableCollection<Workspace> Workspaces { get { return App.Data.Workspaces; } }
 
         public WorkspacePage()
         {
