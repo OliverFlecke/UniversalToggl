@@ -18,7 +18,10 @@ namespace UniversalToggl.View.Model
         public string DateAsString { get { return date.ToString("dd MMM yyyy"); } }
 
         private ObservableCollection<TimeEntry> entries;
-        public ObservableCollection<TimeEntry> Entries { get { return entries; } }
+        public ObservableCollection<TimeEntry> Entries
+        {
+            get { return entries; }
+        }
 
         private Visibility visible = Visibility.Visible;
 
@@ -28,7 +31,20 @@ namespace UniversalToggl.View.Model
             set { visible = value; }
         }
 
+        public string TotalTime
+        {
+            get
+            {
+                long sum = Entries.Sum(x => x.Duration);
+                return TimeEntry.DurationToString((int) sum);
+            }
+        }
 
+
+        /// <summary>
+        /// Create a new model with a date 
+        /// </summary>
+        /// <param name="date"></param>
         public TimeEntryByDateViewModel(DateTime date)
         {
             if (date == null)

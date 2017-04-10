@@ -58,6 +58,17 @@ namespace TogglAPI
         }
 
         /// <summary>
+        /// Create a user with an email and a password
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="password"></param>
+        public User(string email, string password)
+        {
+            this.Email = email;
+            this.Password = password;
+        }
+
+        /// <summary>
         /// Get the API token in base64 used to authenticate the user through the Web API.
         /// The API token is appended with ':api_token' and converted to base64.
         /// </summary>
@@ -105,7 +116,7 @@ namespace TogglAPI
         /// <returns>The user which has connected to the API</returns>
         public async static Task<User> Logon(string email, string password)
         {
-            Connection.SetupConnection(email, password);
+            SetupConnection(email, password);
             return await Logon();
         }
 
@@ -118,6 +129,12 @@ namespace TogglAPI
         {
             Connection.SetupConnection(new User() { Token = apiToken });
             return await Logon();
+        }
+
+        public static User SetupConnection(string email, string password)
+        {
+            Connection.SetupConnection(email, password);
+            return new User(email, password);
         }
 
         #endregion

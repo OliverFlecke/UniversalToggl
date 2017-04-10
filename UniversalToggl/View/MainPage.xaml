@@ -12,18 +12,35 @@
 
     <Page.Resources>
         <DataTemplate x:Key="CollapsedItem" x:DataType="model:TimeEntryByDateViewModel">
-            <TextBlock Text="{x:Bind DateAsString}" FontSize="{StaticResource ListViewHeaderItemThemeFontSize}"/>
+            <Grid Margin="0,6">
+                <TextBlock Text="{x:Bind DateAsString}" 
+                           FontSize="{StaticResource ListViewHeaderItemThemeFontSize}"
+                           Margin="6,0"/>
+                <TextBlock Text="{x:Bind TotalTime}"
+                           FontSize="{StaticResource ListViewHeaderItemThemeFontSize}"
+                           HorizontalAlignment="Right"
+                           Margin="6,0"/>
+            </Grid>
         </DataTemplate>
         <DataTemplate x:Key="ExpandedItem" x:DataType="model:TimeEntryByDateViewModel">
-            <StackPanel Margin="0,0,0,12">
-                <TextBlock Text="{x:Bind DateAsString}" FontSize="{StaticResource ListViewHeaderItemThemeFontSize}"/>
+            <StackPanel Margin="0,6">
+                <Grid>
+                    <TextBlock Text="{x:Bind DateAsString}" 
+                               FontSize="{StaticResource ListViewHeaderItemThemeFontSize}"
+                               Margin="6,0"/>
+                    <TextBlock Text="{x:Bind TotalTime}"
+                               FontSize="{StaticResource ListViewHeaderItemThemeFontSize}"
+                               HorizontalAlignment="Right"
+                               Margin="6,0"/>
+                </Grid>
                 <ListView x:Name="TimeEntryListContent" 
                           ItemsSource="{x:Bind Entries, Mode=OneWay}"
                           VerticalAlignment="Stretch"
-                          HorizontalContentAlignment="Stretch">
+                          HorizontalContentAlignment="Stretch"
+                          ScrollViewer.VerticalScrollMode="Disabled">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="TogglAPI:TimeEntry">
-                            <Grid Height="48"
+                            <Grid MinHeight="48"
                                   Background="DarkGray"
                                   BorderBrush="DarkRed"
                                   BorderThickness="1"
@@ -46,6 +63,7 @@
                                                Style="{ThemeResource SubtitleTextBlockStyle}"/>
                                     <TextBlock Text="{x:Bind ProjectName}"
                                                Foreground="Black"
+                                               MinHeight="0"
                                                Style="{ThemeResource BodyTextBlockStyle}"/>
                                 </StackPanel>
                                 <Grid Grid.Column="1"
@@ -69,7 +87,7 @@
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                            <Setter Property="Padding" Value="6,0"></Setter>
+                            <Setter Property="Padding" Value="0"></Setter>
                         </Style>
                     </ListView.ItemContainerStyle>
                 </ListView>
@@ -88,7 +106,7 @@
         <TextBlock Text="Entries"
                    FontFamily="{StaticResource PivotTitleFontFamily}" 
                    FontSize="{StaticResource HubHeaderThemeFontSize}"
-                   Margin="6,0,0,6"/>
+                   Margin="6,0,0,0"/>
 
         <Grid Grid.Row="1"
               x:Name="RunningTimeEntryDisplay"
@@ -141,7 +159,7 @@
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                    <Setter Property="Padding" Value="6,0"/>
+                    <Setter Property="Padding" Value="0"/>
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>

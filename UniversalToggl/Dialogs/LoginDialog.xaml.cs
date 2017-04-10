@@ -3,6 +3,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.Security.Credentials;
 using TogglAPI;
+using System;
 
 // The Content Dialog item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -27,19 +28,27 @@ namespace UniversalToggl.Dialogs
         {
             try
             {
-                App.user = await User.Logon(email, password);
-
-                App.localStorage.Values["username"] = email;
-                App.vault.Add(new PasswordCredential(App.AppName, email, password));
-                this.Hide();
+                try
+                {
+                    App.user = await User.Logon(email, password);
+                } 
+                catch (AuthenticationException)
+                {
+                    this.ErrorMessage.Visibility = Visibility.Visible;
+                    this.ErrorMessage.Text = "Email or password is invalid";
+                    this.Password_box.Password = "";
+                    Connection.Reset();
+                    return;
+                }
             }
-            catch (AuthenticationException)
+            catch (Exception)
             {
-                this.ErrorMessage.Visibility = Visibility.Visible;
-                this.ErrorMessage.Text = "Email or password is invalid";
-                this.Password_box.Password = "";
-                Connection.Reset();
+                User.SetupConnection(email, password);
             }
+
+            App.localStorage.Values["username"] = email;
+            App.vault.Add(new PasswordCredential(App.AppName, email, password));
+            this.Hide();
         }
 
         private void Login()

@@ -37,9 +37,9 @@ namespace UniversalToggl.View
             App.SaveAppData();
         }
 
-        private void ReadDataFromStorage_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        private async void ReadDataFromStorage_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
-            App.ReadAppData();
+            await App.ReadAppData();
         }
     }
 }

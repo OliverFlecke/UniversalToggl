@@ -113,7 +113,6 @@ namespace TogglAPI
             request.Content = new StringContent(json);
             request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
             HttpResponseMessage response = await Client.SendAsync(request);
-
             if (!response.IsSuccessStatusCode)
                 ErrorHandling(response);
             return ExtractContent(response);

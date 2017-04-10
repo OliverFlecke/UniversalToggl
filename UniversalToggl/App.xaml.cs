@@ -198,46 +198,51 @@ namespace UniversalToggl
         /// <returns></returns>
         public static async Task ReadAppData()
         {
-            var file = await ApplicationData.Current.LocalFolder.TryGetItemAsync("TimeEntries");
-            if (file != null)
+            try
             {
-                using (Stream reader = await (file as StorageFile).OpenStreamForReadAsync())
+                var file = await ApplicationData.Current.LocalFolder.TryGetItemAsync("TimeEntries");
+                if (file != null)
                 {
-                    DataContractSerializer serializer = new DataContractSerializer(typeof(ObservableCollection<TimeEntry>));
-                    Data.TimeEntries = (ObservableCollection<TimeEntry>)serializer.ReadObject(reader);
-                    reader.Dispose();
+                    using (Stream reader = await (file as StorageFile).OpenStreamForReadAsync())
+                    {
+                        DataContractSerializer serializer = new DataContractSerializer(typeof(ObservableCollection<TimeEntry>));
+                        Data.TimeEntries = (ObservableCollection<TimeEntry>)serializer.ReadObject(reader);
+                        reader.Dispose();
+                    }
+                }
+                file = await ApplicationData.Current.LocalFolder.TryGetItemAsync("Workspaces");
+                if (file != null)
+                {
+                    using (Stream reader = await (file as StorageFile).OpenStreamForReadAsync())
+                    {
+                        DataContractSerializer serializer = new DataContractSerializer(typeof(ObservableCollection<Workspace>));
+                        Data.Workspaces = (ObservableCollection<Workspace>) serializer.ReadObject(reader);
+                        reader.Dispose();
+                    }
+                }
+                file = await ApplicationData.Current.LocalFolder.TryGetItemAsync("Projects");
+                if (file != null)
+                {
+                    using (Stream reader = await (file as StorageFile).OpenStreamForReadAsync())
+                    {
+                        DataContractSerializer serializer = new DataContractSerializer(typeof(ObservableCollection<Project>));
+                        Data.Projects = (ObservableCollection<Project>)serializer.ReadObject(reader);
+                        reader.Dispose();
+                    }
+                }
+                file = await ApplicationData.Current.LocalFolder.TryGetItemAsync("Tags");
+                if (file != null)
+                {
+                    using (Stream reader = await (file as StorageFile).OpenStreamForReadAsync())
+                    {
+                        DataContractSerializer serializer = new DataContractSerializer(typeof(ObservableCollection<Tag>));
+                        Data.Tags = (ObservableCollection<Tag>)serializer.ReadObject(reader);
+                        reader.Dispose();
+                    }
                 }
             }
-            file = await ApplicationData.Current.LocalFolder.TryGetItemAsync("Workspaces");
-            if (file != null)
-            {
-                using (Stream reader = await (file as StorageFile).OpenStreamForReadAsync())
-                {
-                    DataContractSerializer serializer = new DataContractSerializer(typeof(ObservableCollection<Workspace>));
-                    Data.Workspaces = (ObservableCollection<Workspace>) serializer.ReadObject(reader);
-                    reader.Dispose();
-                }
-            }
-            file = await ApplicationData.Current.LocalFolder.TryGetItemAsync("Projects");
-            if (file != null)
-            {
-                using (Stream reader = await (file as StorageFile).OpenStreamForReadAsync())
-                {
-                    DataContractSerializer serializer = new DataContractSerializer(typeof(ObservableCollection<Project>));
-                    Data.Projects = (ObservableCollection<Project>)serializer.ReadObject(reader);
-                    reader.Dispose();
-                }
-            }
-            file = await ApplicationData.Current.LocalFolder.TryGetItemAsync("Tags");
-            if (file != null)
-            {
-                using (Stream reader = await (file as StorageFile).OpenStreamForReadAsync())
-                {
-                    DataContractSerializer serializer = new DataContractSerializer(typeof(ObservableCollection<Tag>));
-                    Data.Tags = (ObservableCollection<Tag>)serializer.ReadObject(reader);
-                    reader.Dispose();
-                }
-            }
+            catch (Exception)
+            { }
         }
 
     }

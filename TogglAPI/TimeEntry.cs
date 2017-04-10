@@ -3,7 +3,6 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace TogglAPI
@@ -41,12 +40,9 @@ namespace TogglAPI
         {
             get
             {
-                var span = new TimeSpan(0, 0, (int) Duration);
-                if (span.Ticks < 0) return string.Empty;
-                return string.Format("{0:00}:{1:00}:{2:00}", span.Days * 24 + span.Hours, span.Minutes, span.Seconds);
+                return DurationToString((int) Duration);
             }
         }
-
         [JsonProperty(PropertyName = "description")]
         public string Description { get; set; }
 
@@ -70,6 +66,18 @@ namespace TogglAPI
         {
             if (description == null) this.Description = string.Empty;
             else this.Description = description;
+        }
+
+        /// <summary>
+        /// Convert a duration as an integer to a formated string
+        /// </summary>
+        /// <param name="duration"></param>
+        /// <returns></returns>
+        public static string DurationToString(int duration)
+        {
+            var span = new TimeSpan(0, 0, duration);
+            if (span.Ticks < 0) return string.Empty;
+            return string.Format("{0:00}:{1:00}:{2:00}", span.Days * 24 + span.Hours, span.Minutes, span.Seconds);
         }
 
 

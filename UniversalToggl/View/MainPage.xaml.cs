@@ -7,7 +7,6 @@ using TogglAPI;
 using UniversalToggl.Dialogs;
 using UniversalToggl.View.Model;
 using Windows.UI.Xaml.Input;
-using Windows.System;
 using System.Collections.Generic;
 
 namespace UniversalToggl.View
@@ -20,8 +19,12 @@ namespace UniversalToggl.View
         #region Properties
         public TimeEntryViewModel RunningTimeEntry { get { return App.Data.RunningTimeEntry; } }
 
-        private ObservableCollection<TimeEntryByDateViewModel> timeEntries = new ObservableCollection<TimeEntryByDateViewModel>();
-        public ObservableCollection<TimeEntryByDateViewModel> TimeEntries { get { return timeEntries; } }
+        private static ObservableCollection<TimeEntryByDateViewModel> timeEntries = new ObservableCollection<TimeEntryByDateViewModel>();
+        public ObservableCollection<TimeEntryByDateViewModel> TimeEntries
+        {
+            get { return timeEntries; }
+            set { timeEntries = value; }
+        }
         //public ObservableCollection<TimeEntry> TimeEntries { get { return App.data.TimeEntries; } }
         public ObservableCollection<Workspace> Workspaces { get { return App.Data.Workspaces; } }
         public ObservableCollection<Project> Projects { get { return App.Data.Projects; } }
@@ -68,17 +71,10 @@ namespace UniversalToggl.View
 
             foreach (TimeEntry entry in App.Data.TimeEntries)
             {
-                TimeEntryByDateViewModel model;
-                try
-                {
-                    model = TimeEntries.First<TimeEntryByDateViewModel>(x => x.Date == entry.Start.Date);
-                }
-                catch (Exception)
-                {
-                    model = new TimeEntryByDateViewModel(entry.Start.Date);
-                    TimeEntries.Add(model);
-                }
+                TimeEntryByDateViewModel model = TimeEntries.Where(x => x.Date == entry.Start.Date).DefaultIfEmpty(new TimeEntryByDateViewModel(entry.Start.Date)).First();
                 model.Entries.Add(entry);
+                if (!TimeEntries.Contains(model))
+                    TimeEntries.Add(model);
             }
         }
 
@@ -88,7 +84,13 @@ namespace UniversalToggl.View
         public async void UpdateRunningTimeEntry()
         {
             // Get the running entry
-            var runningEntry = await TimeEntry.GetRunningTimeEntry();
+            TimeEntry runningEntry = null;
+            try
+            {
+                runningEntry = await TimeEntry.GetRunningTimeEntry();
+            }
+            catch (Exception) { }
+
             if (runningEntry != null)
             {
                 this.RunningTimeEntry.Entry = runningEntry;

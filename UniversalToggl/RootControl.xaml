@@ -11,7 +11,7 @@
 
     <UserControl.Resources>
         <ResourceDictionary>
-            <SolidColorBrush x:Key="SplitViewBackgroundBrush" Color="Red" Opacity="0.75" />
+            <SolidColorBrush x:Key="SplitViewBackgroundBrush" Color="DarkRed" Opacity="0.75" />
             <SolidColorBrush x:Key="SplitViewForegroundBrush" Color="{ThemeResource SystemBaseHighColor}" />
             <SolidColorBrush x:Key="NavButtonPressedBackgroundBrush" Color="{ThemeResource SystemListMediumColor}" />
             <SolidColorBrush x:Key="NavButtonHoverBackgroundBrush" Color="{ThemeResource SystemListLowColor}" />
