@@ -69,6 +69,7 @@ namespace UniversalToggl.View
             if (!App.Data.TimeEntries.Any())
                 await App.Data.Synchronice();
 
+            TimeEntries.Clear();
             foreach (TimeEntry entry in App.Data.TimeEntries)
             {
                 TimeEntryByDateViewModel model = TimeEntries.Where(x => x.Date == entry.Start.Date).DefaultIfEmpty(new TimeEntryByDateViewModel(entry.Start.Date)).First();
