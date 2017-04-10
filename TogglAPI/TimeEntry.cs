@@ -2,12 +2,13 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Net;
 using System.Threading.Tasks;
 
 namespace TogglAPI
 {
-    public class TimeEntry
+    public class TimeEntry : INotifyPropertyChanged
     {
         #region Properties
         [JsonProperty(PropertyName = "id")]
@@ -66,6 +67,12 @@ namespace TogglAPI
         {
             if (description == null) this.Description = string.Empty;
             else this.Description = description;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>
@@ -286,7 +293,7 @@ namespace TogglAPI
     /// <summary>
     /// Comparer to compare time entries, which are equal if there discription is equal.
     /// </summary>
-    public class DescriptionComparer : IEqualityComparer<TimeEntry>
+    public class TimeEntryDescriptionComparer : IEqualityComparer<TimeEntry>
     {
         public bool Equals(TimeEntry x, TimeEntry y)
         {

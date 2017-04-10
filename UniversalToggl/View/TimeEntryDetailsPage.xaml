@@ -50,10 +50,52 @@
                             HorizontalAlignment="Stretch"/>
             </StackPanel>
 
-            <ListView ItemsSource="{x:Bind Entry.Tags}"
-                      BorderBrush="Red"
-                      BorderThickness="1">
-            </ListView>
+            <StackPanel Margin="0,6">
+                <AutoSuggestBox x:Name="AddTagBox" 
+                                PlaceholderText="Name of tag"
+                                Header="Tags"
+                                TextChanged="AddTagBox_TextChanged"
+                                SuggestionChosen="AddTagBox_SuggestionChosen"
+                                GotFocus="AddTagBox_GotFocus"
+                                TextMemberPath="Name"
+                                DisplayMemberPath="Name"
+                                KeyUp="AddTagBox_KeyUp"/>
+                <Button x:Name="AddTagButton"
+                        Content="Add Tag"
+                        Margin="0,6"
+                        MinWidth="140"
+                        Tapped="AddTagButton_Tapped"/>
+                <ListView x:Name="TagListView"
+                          ItemsSource="{x:Bind Entry.Tags, Mode=OneWay}"
+                          BorderBrush="DarkRed"
+                          BorderThickness="1">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <TextBlock Text="{Binding}"/>
+                                <Button x:Name="DeleteTagButton" 
+                                        Content="Delete"
+                                        MinWidth="100"
+                                        Tapped="DeleteTagButton_Tapped"
+                                        HorizontalAlignment="Right"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
+
+                <Button x:Name="DeleteTimeEntryButton" 
+                        Content="Delete Time Entry"
+                        Margin="6"
+                        HorizontalAlignment="Stretch"
+                        BorderBrush="DarkRed"
+                        BorderThickness="2"
+                        Tapped="DeleteTimeEntryButton_Tapped"/>
+            </StackPanel>
         </StackPanel>
 
         <CommandBar Grid.Row="1">

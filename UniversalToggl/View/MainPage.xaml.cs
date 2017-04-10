@@ -8,6 +8,7 @@ using UniversalToggl.Dialogs;
 using UniversalToggl.View.Model;
 using Windows.UI.Xaml.Input;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace UniversalToggl.View
 {
@@ -65,6 +66,15 @@ namespace UniversalToggl.View
                 }
             }
 
+            await UpdateEntries();
+        }
+
+        /// <summary>
+        /// Update the entries on the page
+        /// </summary>
+        /// <returns></returns>
+        private async Task UpdateEntries()
+        {
             UpdateRunningTimeEntry();
             if (!App.Data.TimeEntries.Any())
                 await App.Data.Synchronice();
@@ -77,6 +87,7 @@ namespace UniversalToggl.View
                 if (!TimeEntries.Contains(model))
                     TimeEntries.Add(model);
             }
+            TimeEntries.OrderBy(x => x.Date);
         }
 
         /// <summary>
@@ -139,18 +150,60 @@ namespace UniversalToggl.View
             }
         }
 
+        /// <summary>
+        /// Create a new time entry with a predefined start and end time
+        /// </summary>
+        /// <param name="description"></param>
+        /// <param name="projectName"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <param name="tags"></param>
         internal async void CreateTimeEntry(string description, string projectName, DateTime start, DateTime end, List<Tag> tags = null)
         {
             TimeEntry entry;
             try
             {
-                Project project = App.Data.Projects.First(x => x.Name == projectName);
-                int duration = (int) (end - start).TotalSeconds;
-                entry = await TimeEntry.CreateTimeEntry(description, start, duration, project.ID);
+                int duration = (int)(end - start).TotalSeconds;
+                Project project = null;
+                try
+                {
+                    project = App.Data.Projects.First(x => x.Name == projectName);
+                    entry = await TimeEntry.CreateTimeEntry(description, start, duration, project.ID);
+                }
+                catch (Exception)
+                {
+                    entry = await TimeEntry.CreateTimeEntry(description, start, duration);
+                }
 
-                entry.ProjectName = project.Name;
-                App.Data.TimeEntries.Add(entry);
-            } catch (Exception) { }
+                entry.ProjectName = projectName;
+                AddTimeEntry(entry);
+            }
+            catch (Exception) { }
+        }
+
+        /// <summary>
+        /// Add a time entry to the data shared in the app.
+        /// </summary>
+        /// <param name="entry">The app to add</param>
+        private void AddTimeEntry(TimeEntry entry)
+        {
+            App.Data.TimeEntries.Add(entry);
+            var viewModel = this.TimeEntries.Where(x => x.Date == entry.Start.Date)
+                .DefaultIfEmpty(new TimeEntryByDateViewModel(entry.Start.Date))
+                .First();
+            int index = 0;
+            while (index < viewModel.Entries.Count && viewModel.Entries.ElementAt(index).Start > entry.Start)
+            {
+                index++;
+            }
+            viewModel.Entries.Insert(index, entry);
+            if (!this.TimeEntries.Contains(viewModel))
+            {
+                this.TimeEntries.Insert(0, viewModel);
+                this.TimeEntries.OrderByDescending(x => x.Date);
+            }
+            else
+                viewModel.OnPropertyChanged("Entries");
         }
 
         /// <summary>
@@ -163,13 +216,12 @@ namespace UniversalToggl.View
             TimeEntry entry = await TimeEntry.StopTimeEntry(this.RunningTimeEntry.Entry.Id);
             try
             {
-                Project project = Projects.First<Project>(x => x.ID == entry.ProjectId);
+                Project project = Projects.First(x => x.ID == entry.ProjectId);
                 entry.ProjectName = project.Name;
             }
             catch (Exception) { }
-            
-            App.Data.TimeEntries.Insert(0, entry);
 
+            AddTimeEntry(entry);
             // Hid the running entry panel
             this.RunningTimeEntryDisplay.Visibility = Visibility.Collapsed;
             RunningTimeEntry.Entry = null;
@@ -213,18 +265,23 @@ namespace UniversalToggl.View
             ListViewItem item = (list.ContainerFromIndex(list.SelectedIndex)) as ListViewItem;
 
             var model = list.SelectedItem as TimeEntryByDateViewModel;
-            if (model.IsVisible == Visibility.Visible)
+            if (model != null)
             {
-                model.IsVisible = Visibility.Collapsed;
-                item.ContentTemplate = Resources["CollapsedItem"] as DataTemplate;
+                if (model.IsVisible == Visibility.Visible)
+                {
+                    model.IsVisible = Visibility.Collapsed;
+                    item.ContentTemplate = Resources["CollapsedItem"] as DataTemplate;
 
+                }
+                else
+                {
+                    model.IsVisible = Visibility.Visible;
+                    item.ContentTemplate = Resources["ExpandedItem"] as DataTemplate;
+                }
             }
-            else
-            {
-                model.IsVisible = Visibility.Visible;
-                item.ContentTemplate = Resources["ExpandedItem"] as DataTemplate;
-            }
-            item.IsSelected = false;
+            if (item != null)
+                item.IsSelected = false;
         }
+
     }
 }

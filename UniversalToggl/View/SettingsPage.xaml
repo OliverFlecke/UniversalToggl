@@ -27,21 +27,23 @@
                        Visibility="Collapsed"
                        Foreground="Red"/>
             <TextBlock Text="Update local storage"
-                       Margin="0,12"/>
-            <StackPanel Orientation="Horizontal">
+                       Margin="0,6"/>
+            <StackPanel>
                 <Button x:Name="ClearLocalData"
                         Content="Clear local data"
                         Tapped="ClearLocalData_Tapped"
-                        MinWidth="100"/>
+                        MinWidth="200"
+                        Margin="0,6"/>
                 <Button x:Name="SaveToLocalStorage"
                         Content="Save data locally"
                         Tapped="SaveToLocalStorage_Tapped"
-                        Margin="12,0"
-                        MinWidth="100"/>
+                        Margin="0,6"
+                        MinWidth="200"/>
                 <Button x:Name="ReadDataFromStorage"
                         Content="Read Data"
                         Tapped="ReadDataFromStorage_Tapped"
-                        MinWidth="100"/>
+                        MinWidth="200"
+                        Margin="0,6"/>
             </StackPanel>
         </StackPanel>
     </Grid>

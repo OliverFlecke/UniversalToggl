@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TogglAPI;
 using Windows.UI.Xaml;
 
 namespace UniversalToggl.View.Model
 {
-    public class TimeEntryByDateViewModel
+    public class TimeEntryByDateViewModel : INotifyPropertyChanged
     {
         private DateTime date;
 
@@ -20,11 +19,13 @@ namespace UniversalToggl.View.Model
         private ObservableCollection<TimeEntry> entries;
         public ObservableCollection<TimeEntry> Entries
         {
-            get { return entries; }
+            get
+            {
+                return entries;
+            }
         }
 
         private Visibility visible = Visibility.Visible;
-
         public Visibility IsVisible
         {
             get { return visible; }
@@ -40,6 +41,11 @@ namespace UniversalToggl.View.Model
             }
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         /// <summary>
         /// Create a new model with a date 
@@ -48,13 +54,9 @@ namespace UniversalToggl.View.Model
         public TimeEntryByDateViewModel(DateTime date)
         {
             if (date == null)
-            {
                 throw new ArgumentNullException("Date cannot be null");
-            }
             this.date = date;
             entries = new ObservableCollection<TimeEntry>();
         }
-
-
     }
 }

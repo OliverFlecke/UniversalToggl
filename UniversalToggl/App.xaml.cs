@@ -15,6 +15,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections;
+using Windows.UI.Core;
 
 namespace UniversalToggl
 {
@@ -43,18 +44,23 @@ namespace UniversalToggl
             this.Suspending += OnSuspending;
         }
 
-        private void App_BackRequested(object sender, Windows.UI.Core.BackRequestedEventArgs e)
+        private void OnNavigated(object sender, NavigationEventArgs e)
         {
-            Frame rootFrame = Window.Current.Content as Frame;
-            if (rootFrame == null)
-                return;
+            // Each time a navigation event occurs, update the Back button's visibility
+            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
+                ((Frame)sender).CanGoBack ?
+                AppViewBackButtonVisibility.Visible :
+                AppViewBackButtonVisibility.Collapsed;
+        }
 
-            // Navigate back if possible, and if the event has not 
-            // already been handled .
-            if (rootFrame.CanGoBack && e.Handled == false)
+        private void OnBackRequested(object sender, BackRequestedEventArgs e)
+        {
+            var rootFrame = Window.Current.Content as RootControl;
+
+            if (rootFrame.RootFrame.CanGoBack)
             {
                 e.Handled = true;
-                rootFrame.GoBack();
+                rootFrame.RootFrame.GoBack();
             }
         }
 
@@ -74,6 +80,7 @@ namespace UniversalToggl
 
             var rootFrame = Window.Current.Content as RootControl;
 
+            // Load state from previously suspended application
             await ReadAppData();
 
             // Do not repeat app initialization when the Window already has content,
@@ -84,11 +91,18 @@ namespace UniversalToggl
                 rootFrame = new RootControl();
 
                 rootFrame.RootFrame.NavigationFailed += OnNavigationFailed;
+                rootFrame.RootFrame.Navigated += OnNavigated;
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
-                    //TODO: Load state from previously suspended application
                 }
+                // Register a handler for BackRequested events and set the
+                // visibility of the Back button
+                SystemNavigationManager.GetForCurrentView().BackRequested += OnBackRequested;
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
+                    rootFrame.RootFrame.CanGoBack ?
+                    AppViewBackButtonVisibility.Visible :
+                    AppViewBackButtonVisibility.Collapsed;
 
                 // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
@@ -127,9 +141,7 @@ namespace UniversalToggl
         private void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
-            //TODO: Save application state and stop any background activity
             SaveAppData();
-
             deferral.Complete();
         }
 

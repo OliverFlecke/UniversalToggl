@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Runtime.Serialization;
+using System.Collections.Generic;
 
 namespace TogglAPI
 {
@@ -92,6 +93,22 @@ namespace TogglAPI
         private static Tag CreateTagFromJSON(string json)
         {
             return JsonConvert.DeserializeObject<Tag>(JObject.Parse(json).SelectToken("data").ToString());
+        }
+    }
+
+    /// <summary>
+    /// Comparer to compare time entries, which are equal if there discription is equal.
+    /// </summary>
+    public class TagNameComparer : IEqualityComparer<Tag>
+    {
+        public bool Equals(Tag x, Tag y)
+        {
+            return x.Name == y.Name;
+        }
+
+        public int GetHashCode(Tag obj)
+        {
+            return obj.Name.GetHashCode();
         }
     }
 }

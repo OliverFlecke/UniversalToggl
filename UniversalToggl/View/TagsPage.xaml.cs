@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using TogglAPI;
 using Windows.UI.Xaml.Controls;
 
@@ -11,7 +12,10 @@ namespace UniversalToggl.View
     /// </summary>
     public sealed partial class TagsPage : Page
     {
-        public ObservableCollection<Tag> Tags { get { return App.Data.Tags; } }
+        public ObservableCollection<Tag> Tags
+        {
+            get { return (ObservableCollection<Tag>) App.Data.Tags.Distinct(new TagNameComparer()); }
+        }
 
         public TagsPage()
         {

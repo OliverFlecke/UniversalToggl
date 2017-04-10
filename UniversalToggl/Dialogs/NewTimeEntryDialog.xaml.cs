@@ -124,7 +124,7 @@ namespace UniversalToggl.Dialogs
         /// <param name="args"></param>
         private void TimeEntryDescriptionBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
-            sender.ItemsSource = App.Data.TimeEntries.Where(x => x.Description.ToLower().StartsWith(sender.Text.ToLower())).Distinct(new DescriptionComparer());
+            sender.ItemsSource = App.Data.TimeEntries.Where(x => x.Description.ToLower().StartsWith(sender.Text.ToLower())).Distinct(new TimeEntryDescriptionComparer());
         }
 
         private void TimeEntryDescriptionBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
